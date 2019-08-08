@@ -1,9 +1,6 @@
 package com.giantmachines.biblio.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 public class Review {
     @Id

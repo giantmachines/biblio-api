@@ -11,7 +11,7 @@ public class Book {
     private String title;
     @ManyToOne
     private Author author;
-    private String image;    // An image path
+    private String image;    // An image path or URL
     @OneToMany
     private List<Review> reviews = new ArrayList<>();
 
