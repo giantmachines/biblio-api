@@ -35,6 +35,7 @@ public class BookService {
         this.repository.save(book);
     }
 
+    @Transactional
     public void delete(Book book) throws PersistenceException {
         this.repository.delete(book);
     }
