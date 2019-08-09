@@ -2,6 +2,7 @@ package com.giantmachines.biblio.model;
 
 import javax.persistence.*;
 
+@Entity
 public class BookStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
