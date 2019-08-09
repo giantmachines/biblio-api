@@ -16,6 +16,15 @@ public class Book {
     @OneToMany
     private List<Review> reviews = new ArrayList<>();
 
+    public Book(String title, Author author, String image, List<Review> reviews) {
+        this.title = title;
+        this.author = author;
+        this.image = image;
+        this.reviews = reviews;
+    }
+
+    public Book() { }
+
     public long getId() {
         return id;
     }

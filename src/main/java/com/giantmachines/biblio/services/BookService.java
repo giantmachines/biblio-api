@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -21,8 +23,10 @@ public class BookService {
     }
 
 
-    public Iterable<Book> getAll(){
-        return this.repository.findAll();
+    public List<Book> getAll(){
+        List<Book> result = new ArrayList<>();
+        this.repository.findAll().forEach(result::add);
+        return result;
     }
 
 

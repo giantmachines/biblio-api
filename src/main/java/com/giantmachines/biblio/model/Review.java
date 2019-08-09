@@ -12,6 +12,14 @@ public class Review {
     private int value;
     private String comments;
 
+    public Review(User reviewer, int value, String comments) {
+        this.reviewer = reviewer;
+        this.value = value;
+        this.comments = comments;
+    }
+
+    public Review() { }
+
     public long getId() {
         return id;
     }

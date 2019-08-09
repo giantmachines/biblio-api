@@ -9,6 +9,12 @@ public class BookStatus {
     private long id;
     @Enumerated(EnumType.ORDINAL)
     private Status value = Status.AVAILABLE;
+
+    public BookStatus(Status value) {
+        this.value = value;
+    }
+
+    public BookStatus() { }
 }
 
 enum Status { UNAVAILABLE, AVAILABLE, MISSING }

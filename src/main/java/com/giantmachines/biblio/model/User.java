@@ -14,6 +14,15 @@ public class User {
     @Column(columnDefinition = "tinyint default 0")
     private boolean online = false;
 
+    public User(String firstName, String lastName, boolean active, boolean online) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.active = active;
+        this.online = online;
+    }
+
+    public User() { }
+
     public long getId() {
         return id;
     }
