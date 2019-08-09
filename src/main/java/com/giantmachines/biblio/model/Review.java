@@ -10,6 +10,7 @@ public class Review {
     @OneToOne
     private User reviewer;
     private int value;
+    private String comments;
 
     public long getId() {
         return id;
@@ -21,5 +22,9 @@ public class Review {
 
     public int getValue() {
         return value;
+    }
+
+    public String getComments(){
+        return comments;
     }
 }
