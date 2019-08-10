@@ -20,7 +20,7 @@ public class AuthorService {
         return this.repository.findById(id).orElse(null);
     }
 
-    public void save(Author author) throws PersistenceException {
-        this.repository.save(author);
+    public Author save(Author author) throws PersistenceException {
+        return this.repository.save(author);
     }
 }

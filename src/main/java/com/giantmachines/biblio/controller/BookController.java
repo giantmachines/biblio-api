@@ -9,25 +9,24 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/books")
-public class BookController {
+public class BookController extends AbstractBaseController{
 
-    private ResponseBuilder responseBuilder;
+    private String path = "books";
     private BookService service;
 
     @Autowired
     public BookController(BookService service) {
-        this.responseBuilder = new ResponseBuilder("books");
         this.service = service;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getAll() {
-        return responseBuilder.buildOkResponse(this.service.getAll());
+        return this.buildOkResponse(this.service.getAll());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getById(@PathVariable long id) {
-        return responseBuilder.buildOkResponse(this.service.getById(id));
+        return this.buildOkResponse(this.service.getById(id));
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -38,12 +37,12 @@ public class BookController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity save(@RequestBody Book book) throws Exception{
         this.service.save(book);
-        return responseBuilder.buildCreatedResponse(book.getId());
+        return this.buildCreatedResponse(book.getId());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable Book book) throws Exception{
         this.service.delete(book);
-        return responseBuilder.buildCreatedResponse(book.getId());
+        return this.buildCreatedResponse(book.getId());
     }
 }

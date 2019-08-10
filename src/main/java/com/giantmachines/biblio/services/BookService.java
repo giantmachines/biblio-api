@@ -40,12 +40,12 @@ public class BookService {
     }
 
     @Transactional
-    public void save(Book book) throws PersistenceException {
+    public Book save(Book book) throws PersistenceException {
         Author author = book.getAuthor();
         if (authorService.getById(author.getId()) == null){
             this.authorService.save(author);
         }
-        this.repository.save(book);
+        return this.repository.save(book);
     }
 
     @Transactional
