@@ -11,7 +11,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -49,6 +48,7 @@ public class UserServiceTest {
     @Test
     public void should_update_a_specified_user(){
         User user = repository.findById(1L).get();
+        assertTrue(user.isOnline()); // A control
         user = service.setStatus(user, false);
         assertFalse(user.isOnline());
     }
@@ -56,6 +56,7 @@ public class UserServiceTest {
     @Test
     public void should_deactivate_a_specified_user_account(){
         User user = repository.findById(1L).get();
+        assertTrue(user.isActive());  // A control
         user = service.deactivate(user);
         assertFalse(user.isActive());
     }
