@@ -9,6 +9,13 @@ public class BookStatus {
     private long id;
     @Enumerated(EnumType.ORDINAL)
     private Status value = Status.AVAILABLE;
+    @ManyToOne
+    private User user;
+
+    public BookStatus(Status value, User user) {
+        this(value);
+        this.user = user;
+    }
 
     public BookStatus(Status value) {
         this.value = value;

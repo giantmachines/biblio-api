@@ -54,7 +54,7 @@ public class BookServiceTest {
     @Test
     public void should_successfully_save_a_new_book_by_an_existing_author(){
         Author author = authorRepository.findById(1L).get();
-        Book newBook = new Book("The Odyssey", author, null, null);
+        Book newBook = new Book("The Odyssey", author, null, null, null);
         service.save(newBook);
 
         List<Book> books = service.getAll();
@@ -63,7 +63,7 @@ public class BookServiceTest {
 
     @Test
     public void should_successfully_save_a_new_book_by_a_new_author(){
-        Book newBook = new Book("On Tyranny", new Author("Timothy", "Snyder"), null, null);
+        Book newBook = new Book("On Tyranny", new Author("Timothy", "Snyder"), null, null, null);
         service.save(newBook);
 
         List<Book> books = service.getAll();

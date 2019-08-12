@@ -15,12 +15,15 @@ public class Book {
     private String image;    // An image path or URL
     @OneToMany
     private List<Review> reviews = new ArrayList<>();
+    @OneToOne
+    private BookStatus status = new BookStatus();
 
-    public Book(String title, Author author, String image, List<Review> reviews) {
+    public Book(String title, Author author, String image, List<Review> reviews, BookStatus status) {
         this.title = title;
         this.author = author;
         this.image = image;
         this.reviews = reviews;
+        this.status = status;
     }
 
     public Book() { }
@@ -43,5 +46,9 @@ public class Book {
 
     public List<Review> getReviews() {
         return reviews;
+    }
+
+    public BookStatus getStatus() {
+        return status;
     }
 }

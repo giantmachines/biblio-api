@@ -1,6 +1,5 @@
 package com.giantmachines.biblio.services;
 
-import com.giantmachines.biblio.dao.AuthorRepository;
 import com.giantmachines.biblio.dao.BookRepository;
 import com.giantmachines.biblio.model.Author;
 import com.giantmachines.biblio.model.Book;
