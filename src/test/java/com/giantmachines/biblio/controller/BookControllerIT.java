@@ -51,6 +51,6 @@ public class BookControllerIT {
                 .andExpect(jsonPath("$[0].title", is("The Iliad")))
                 .andExpect(jsonPath("$[0].author.firstName", is("Homer")))
                 .andExpect(jsonPath("$[0].image", is("http://localhost/biblio/books/images/1")))
-                .andExpect(jsonPath("$[0].reviews", hasSize(1)));
+                .andExpect(jsonPath("$[0].rating", is(5.0)));
     }
 }

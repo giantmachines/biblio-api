@@ -1,8 +1,5 @@
 package com.giantmachines.biblio.model;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.lang.NonNull;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +18,8 @@ public class Book {
     @OneToOne
     @JoinColumn(name = "id")
     private BookStatus status = new BookStatus();
+    @Column(columnDefinition = "tinyint default 1")
+    private boolean active = true;
 
     public Book(String title, Author author, String image) {
         this.title = title;
@@ -41,6 +40,7 @@ public class Book {
         this.image = builder.image;
         this.id = builder.id;
         this.reviews = builder.reviews;
+        this.active = builder.active;
     }
 
     public Book() {
@@ -70,6 +70,10 @@ public class Book {
         return status;
     }
 
+    public boolean isActive(){
+        return active;
+    }
+
     public static class BookBuilder {
         private long id;
         private String title;
@@ -77,6 +81,7 @@ public class Book {
         private String image;
         private List<Review> reviews;
         private BookStatus status;
+        private boolean active;
 
         public BookBuilder(Book book) {
             this.id = book.id;
@@ -85,6 +90,7 @@ public class Book {
             this.image = book.image;
             this.reviews = book.reviews;
             this.status = book.status;
+            this.active = book.active;
         }
 
         public BookBuilder setReviews(List<Review> reviews) {
@@ -94,6 +100,11 @@ public class Book {
 
         public BookBuilder setStatus(BookStatus status) {
             this.status = status;
+            return this;
+        }
+
+        public BookBuilder setActive(boolean active) {
+            this.active = active;
             return this;
         }
     }

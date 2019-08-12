@@ -36,6 +36,10 @@ public class BookService {
         return result;
     }
 
+    public List<Book> getActiveOnly(){
+        return this.repository.getAllActiveBooks();
+    }
+
 
     public Book getById(long id){
         return this.repository.findById(id).get();

@@ -9,7 +9,7 @@ public class User {
     private long id;
     private String firstName;
     private String lastName;
-    @Column(columnDefinition = "tinyint default 0")
+    @Column(columnDefinition = "tinyint default 1")
     private boolean active = true;
     @Column(columnDefinition = "tinyint default 0")
     private boolean online = false;

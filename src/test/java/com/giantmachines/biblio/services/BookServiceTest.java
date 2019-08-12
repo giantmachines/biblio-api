@@ -42,6 +42,19 @@ public class BookServiceTest {
     @Test
     public void should_return_all_books(){
         List<Book> books = service.getAll();
+        assertEquals(5, books.size());
+
+        List<String> titles = books.stream().map(Book::getTitle).collect(Collectors.toList());
+        assertTrue(titles.contains("Refactoring"));
+        assertTrue(titles.contains("The Iliad"));
+        assertTrue(titles.contains("Design Patterns"));
+        assertFalse(titles.contains("ABCD"));
+        assertTrue(titles.contains("1994"));
+    }
+
+    @Test
+    public void should_return_all_active_books(){
+        List<Book> books = service.getActiveOnly();
         assertEquals(4, books.size());
 
         List<String> titles = books.stream().map(Book::getTitle).collect(Collectors.toList());
@@ -51,6 +64,7 @@ public class BookServiceTest {
         assertFalse(titles.contains("ABCD"));
     }
 
+
     @Test
     public void should_successfully_save_a_new_book_by_an_existing_author(){
         Author author = authorRepository.findById(1L).get();
@@ -58,7 +72,7 @@ public class BookServiceTest {
         newBook = service.save(newBook);
 
         List<Book> books = service.getAll();
-        assertEquals(5, books.size());
+        assertEquals(6, books.size());
         assertNotNull(newBook.getStatus());
     }
 
@@ -68,10 +82,10 @@ public class BookServiceTest {
         service.save(newBook);
 
         List<Book> books = service.getAll();
-        assertEquals(5, books.size());
+        assertEquals(6, books.size());
     }
 
-    @Test
+    //@Test
     public void should_successfully_delete_a_specified_book(){
         Book book = service.getById(3L);
         service.delete(book);

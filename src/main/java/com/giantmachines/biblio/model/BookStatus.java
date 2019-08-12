@@ -1,5 +1,7 @@
 package com.giantmachines.biblio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,9 +14,13 @@ public class BookStatus {
     private Status value = Status.AVAILABLE;
     @ManyToOne
     private User user;
+    @OneToOne
+    @JsonIgnore
+    private Book book;
 
-    public BookStatus(Status value, User user) {
+    public BookStatus(Status value, Book book, User user) {
         this(value);
+        this.book = book;
         this.user = user;
     }
 
@@ -35,6 +41,10 @@ public class BookStatus {
 
     public User getUser() {
         return user;
+    }
+
+    public Book getBook() {
+        return book;
     }
 }
 
