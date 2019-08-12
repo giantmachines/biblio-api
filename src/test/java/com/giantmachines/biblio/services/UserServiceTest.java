@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("Test")
+@ActiveProfiles("test")
 @Sql({"classpath:reset.sql"})
 public class UserServiceTest {
 

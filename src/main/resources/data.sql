@@ -9,6 +9,10 @@ insert into book(id, image, title, author_id) values(2, 'http://localhost/biblio
 insert into book(id, image, title, author_id) values(3, 'http://localhost/biblio/books/images/3', 'Refactoring', 2);
 insert into book(id, image, title, author_id) values(4, 'http://localhost/biblio/books/images/4', 'Design Patterns', 3);
 
+insert into book_status(id, value, user_id) values(1, 0, 1);
+insert into book_status(id, value, user_id) values(2, 1, null);
+insert into book_status(id, value, user_id) values(3, 1, null);
+insert into book_status(id, value, user_id) values(4, 1, null);
 
 insert into review(id, value, reviewer_id, comments) values(1, 5, 1, 'I liked it.');
 insert into book_reviews (book_id, reviews_id) values(1, 1);

@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-@ActiveProfiles("Test")
+@ActiveProfiles("test")
 @Sql({"classpath:reset.sql"})
 public class BookServiceTest {
 
@@ -54,16 +54,17 @@ public class BookServiceTest {
     @Test
     public void should_successfully_save_a_new_book_by_an_existing_author(){
         Author author = authorRepository.findById(1L).get();
-        Book newBook = new Book("The Odyssey", author, null, null, null);
-        service.save(newBook);
+        Book newBook = new Book("The Odyssey", author, null);
+        newBook = service.save(newBook);
 
         List<Book> books = service.getAll();
         assertEquals(5, books.size());
+        assertNotNull(newBook.getStatus());
     }
 
     @Test
     public void should_successfully_save_a_new_book_by_a_new_author(){
-        Book newBook = new Book("On Tyranny", new Author("Timothy", "Snyder"), null, null, null);
+        Book newBook = new Book("On Tyranny", new Author("Timothy", "Snyder"),  null);
         service.save(newBook);
 
         List<Book> books = service.getAll();

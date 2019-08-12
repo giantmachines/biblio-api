@@ -1,10 +1,16 @@
 package com.giantmachines.biblio.controller;
 
+import com.giantmachines.biblio.model.Author;
 import com.giantmachines.biblio.model.Book;
+import com.giantmachines.biblio.model.BookStatus;
+import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -20,7 +26,10 @@ public class BookController extends AbstractBaseController{
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity getAll() {
+    public ResponseEntity getAll() {/*
+        List<BookDto> summaries = this.service.getAll().stream()
+                .map(BookDto::new)
+                .collect(Collectors.toList());*/
         return this.buildOkResponse(this.service.getAll());
     }
 
@@ -44,5 +53,43 @@ public class BookController extends AbstractBaseController{
     public ResponseEntity delete(@PathVariable Book book) throws Exception{
         this.service.delete(book);
         return this.buildCreatedResponse(book.getId());
+    }
+}
+
+
+
+class BookDto {
+    private long id;
+    private Author author;
+    private String image;
+    private double rating;
+    private String status;
+
+    BookDto(final Book book, BookStatus status, List<Review> reviews) {
+        this.id = book.getId();
+        this.author = book.getAuthor();
+        this.image = book.getImage();
+        this.status = status.getValue().toString();
+        this.rating = reviews.stream().mapToDouble(Review::getValue).average().orElse(-1.0);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

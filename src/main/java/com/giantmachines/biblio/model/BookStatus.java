@@ -3,6 +3,7 @@ package com.giantmachines.biblio.model;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "book_status")
 public class BookStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +22,19 @@ public class BookStatus {
         this.value = value;
     }
 
-    public BookStatus() { }
+    public BookStatus() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public Status getValue() {
+        return value;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }
 
-enum Status { UNAVAILABLE, AVAILABLE, MISSING }
