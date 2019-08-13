@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
 
+/**
+ * Provides services for retrieving and updating authors
+ */
 @Service
 @Transactional(readOnly = true)
 public class AuthorService {

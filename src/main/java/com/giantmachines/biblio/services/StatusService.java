@@ -5,6 +5,9 @@ import com.giantmachines.biblio.model.BookStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Provides services for retrieving and updating book statuses
+ */
 @Service
 @Transactional(readOnly = true)
 public class StatusService {

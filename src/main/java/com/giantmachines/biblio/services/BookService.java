@@ -12,7 +12,9 @@ import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Provides services for retrieving and updating books
+ */
 @Service
 @Transactional(readOnly = true)
 public class BookService {

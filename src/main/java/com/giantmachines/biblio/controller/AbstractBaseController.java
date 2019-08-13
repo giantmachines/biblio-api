@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.net.URI;
 
+/**
+ * Base class for controllers.  Provides some common functionality that I want to occur behind the scenes.
+ */
 public class AbstractBaseController {
 
 
