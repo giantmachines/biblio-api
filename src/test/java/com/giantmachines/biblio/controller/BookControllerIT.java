@@ -43,7 +43,7 @@ public class BookControllerIT {
      * Metadata is ID, title, author, image
      */
     @Test
-    public void should_get_all_books_with_metadata_plus_status_and_reviews() throws Exception{
+    public void should_get_all_active_books_with_metadata_plus_status_and_reviews() throws Exception{
         mvc.perform(MockMvcRequestBuilders.get("/books").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(4)))
@@ -51,6 +51,28 @@ public class BookControllerIT {
                 .andExpect(jsonPath("$[0].title", is("The Iliad")))
                 .andExpect(jsonPath("$[0].author.firstName", is("Homer")))
                 .andExpect(jsonPath("$[0].image", is("http://localhost/biblio/books/images/1")))
-                .andExpect(jsonPath("$[0].rating", is(5.0)));
+                .andExpect(jsonPath("$[0].rating", is(5.0)))
+                .andExpect(jsonPath("$[0].status", is("UNAVAILABLE")))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].title", is("Patterns of Enterprise Software")))
+                .andExpect(jsonPath("$[1].author.firstName", is("Martin")))
+                .andExpect(jsonPath("$[1].author.lastName", is("Fowler")))
+                .andExpect(jsonPath("$[1].image", is("http://localhost/biblio/books/images/2")))
+                .andExpect(jsonPath("$[1].rating", is(-1.0)))
+                .andExpect(jsonPath("$[1].status", is("AVAILABLE")))
+                .andExpect(jsonPath("$[2].id", is(3)))
+                .andExpect(jsonPath("$[2].title", is("Refactoring")))
+                .andExpect(jsonPath("$[2].author.firstName", is("Martin")))
+                .andExpect(jsonPath("$[2].author.lastName", is("Fowler")))
+                .andExpect(jsonPath("$[2].image", is("http://localhost/biblio/books/images/3")))
+                .andExpect(jsonPath("$[2].rating", is(-1.0)))
+                .andExpect(jsonPath("$[2].status", is("AVAILABLE")))
+                .andExpect(jsonPath("$[3].id", is(4)))
+                .andExpect(jsonPath("$[3].title", is("Design Patterns")))
+                .andExpect(jsonPath("$[3].author.firstName", is("Eric")))
+                .andExpect(jsonPath("$[3].author.lastName", is("Gamma")))
+                .andExpect(jsonPath("$[3].image", is("http://localhost/biblio/books/images/4")))
+                .andExpect(jsonPath("$[3].rating", is(-1.0)))
+                .andExpect(jsonPath("$[3].status", is("AVAILABLE")));
     }
 }
