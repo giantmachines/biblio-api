@@ -3,6 +3,7 @@ package com.giantmachines.biblio.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "book_status")
@@ -17,15 +18,31 @@ public class BookStatus {
     @OneToOne
     @JsonIgnore
     private Book book;
+    private Long lastUpdated;
+    @Column(columnDefinition = "tinyint default 1")
+    @JsonIgnore
+    private boolean latest = true;
+    // NOTE:  The use of latest as a flag means that we hae to set previous status records to false,
+    // but I want to retrieve from the database only the latest status with each book, and so far this is
+    // the least bad way to do it.
+
 
     public BookStatus(Status value, Book book, User user) {
-        this(value);
-        this.book = book;
+        this(value, book);
         this.user = user;
     }
 
-    public BookStatus(Status value) {
+    public BookStatus(Status value, Book book) {
         this.value = value;
+        this.book = book;
+        this.lastUpdated = new Date().getTime();
+        this.latest = true;
+    }
+
+    public BookStatus(BookStatus that){
+        this(that.value, that.book, that.user);
+        this.latest = false;
+        this.id = that.id;
     }
 
     public BookStatus() {
@@ -45,6 +62,14 @@ public class BookStatus {
 
     public Book getBook() {
         return book;
+    }
+
+    public Long getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public boolean isLatest() {
+        return latest;
     }
 }
 

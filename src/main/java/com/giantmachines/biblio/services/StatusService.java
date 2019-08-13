@@ -5,6 +5,8 @@ import com.giantmachines.biblio.model.BookStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Provides services for retrieving and updating book statuses
  */
@@ -24,5 +26,9 @@ public class StatusService {
 
     public BookStatus getById(long id){
         return this.repository.findById(id).orElse(null);
+    }
+
+    public List<BookStatus> getHistory(long bookId){
+        return this.repository.getByBookId(bookId);
     }
 }

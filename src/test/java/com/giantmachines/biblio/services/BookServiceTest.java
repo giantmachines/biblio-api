@@ -4,6 +4,7 @@ import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.dao.AuthorRepository;
 import com.giantmachines.biblio.model.Author;
 import com.giantmachines.biblio.model.Book;
+import com.giantmachines.biblio.model.BookStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class BookServiceTest {
 
     @Autowired
     AuthorRepository authorRepository;
+
+    @Autowired
+    StatusService statusService;
 
 
     @Test
@@ -85,12 +89,15 @@ public class BookServiceTest {
         assertEquals(6, books.size());
     }
 
-    //@Test
-    public void should_successfully_delete_a_specified_book(){
+    @Test
+    public void should_successfully_unregister_a_specified_book(){
         Book book = service.getById(3L);
-        service.delete(book);
+        book = service.unregister(book);
+        assertEquals("DEACTIVATED", book.getStatus().getValue().toString());
 
-        List<Book> books = service.getAll();
+        List<BookStatus> history = statusService.getHistory(3L);
+
+        List<Book> books = service.getActiveOnly();
         assertEquals(3, books.size());
 
         List<String> titles = books.stream().map(Book::getTitle).collect(Collectors.toList());

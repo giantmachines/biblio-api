@@ -51,7 +51,7 @@ public class BookController extends AbstractBaseController{
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable Book book) throws Exception{
-        this.service.delete(book);
+        this.service.unregister(book);
         return this.buildCreatedResponse(book.getId());
     }
 }

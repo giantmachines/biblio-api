@@ -4,8 +4,10 @@ import com.giantmachines.biblio.dao.BookRepository;
 import com.giantmachines.biblio.model.Author;
 import com.giantmachines.biblio.model.Book;
 import com.giantmachines.biblio.model.BookStatus;
+import com.giantmachines.biblio.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
@@ -64,6 +66,9 @@ public class BookService {
             this.statusService.save(status);
             Book.BookBuilder builder = new Book.BookBuilder(book);
             builder.setStatus(status);
+            if (currentStatus != null){
+                this.statusService.save(new BookStatus(currentStatus));
+            }
             book = new Book(builder);
         }
 
@@ -72,7 +77,12 @@ public class BookService {
 
 
     @Transactional
-    public void delete(Book book) throws PersistenceException {
-        this.repository.delete(book);
+    public Book unregister(Book book) throws PersistenceException {
+        BookStatus status = new BookStatus(Status.DEACTIVATED, book);
+        statusService.save(new BookStatus(book.getStatus()));
+        statusService.save(status);
+        Book.BookBuilder builder = new Book.BookBuilder(book);
+        builder.setStatus(status);
+        return this.repository.save(new Book(builder));
     }
 }
