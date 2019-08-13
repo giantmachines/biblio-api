@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
 
+/**
+ * Provides services for retrieving and updating userrs
+ */
 @Service
 @Transactional(readOnly = true)
 public class UserService {
