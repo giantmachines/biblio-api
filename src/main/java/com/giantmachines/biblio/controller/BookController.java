@@ -72,12 +72,13 @@ public class BookController extends AbstractBaseController {
         private Author author;
         private String image;
         /** Average rating */
-        private double averageRating;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        private Double averageRating;
         /** Book status value */
         @JsonInclude(JsonInclude.Include.NON_NULL)
         private String status;
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private Boolean userItem = null;
+        private Boolean highlight = null;
 
         BookDto(final Book book) {
             String userName = BookController.this.currentUser.get();
@@ -86,14 +87,15 @@ public class BookController extends AbstractBaseController {
             this.author = book.getAuthor();
             this.image = book.getImage();
             if (userName != null){
-                this.userItem = false;
+                this.highlight = false;
                 this.status = book.getStatus().getValue().toString();
                 if (book.getStatus().getUser() != null
                         && userName.equals(book.getStatus().getUser().getEmail())) {
-                    this.userItem = true;
+                    this.highlight = true;
                 }
             }
-            this.averageRating = book.getReviews().stream().mapToDouble(Review::getValue).average().orElse(-1.0);
+            double rating = book.getReviews().stream().mapToDouble(Review::getValue).average().orElse(-1.0);
+            this.averageRating = rating > 0 ? rating : null;
         }
 
         public long getId() {
@@ -108,7 +110,7 @@ public class BookController extends AbstractBaseController {
             return image;
         }
 
-        public double getAverageRating() {
+        public Double getAverageRating() {
             return averageRating;
         }
 
@@ -120,8 +122,8 @@ public class BookController extends AbstractBaseController {
             return title;
         }
 
-        public Boolean isUserItem() {
-            return userItem;
+        public Boolean getHighlight() {
+            return highlight;
         }
     }
 

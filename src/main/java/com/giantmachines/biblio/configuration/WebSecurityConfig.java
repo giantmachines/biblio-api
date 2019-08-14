@@ -22,15 +22,10 @@ import java.util.Map;
 @Profile({"secure", "production"})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String LOGIN_PATH = "/users/login";
-
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .anonymous();
-               // .and().authorizeRequests().anyRequest().authenticated();
     }
 
     @Bean
