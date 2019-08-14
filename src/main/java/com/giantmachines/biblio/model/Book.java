@@ -13,7 +13,8 @@ public class Book {
     @ManyToOne(fetch = FetchType.EAGER)
     private Author author;
     private String image;    // An image path or URL
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
+    @OrderBy("reviewTime desc")
     private List<Review> reviews = new ArrayList<>();
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
@@ -66,7 +67,6 @@ public class Book {
     public BookStatus getStatus() {
         return status;
     }
-
 
     public static class BookBuilder {
         private long id;

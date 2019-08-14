@@ -1,16 +1,31 @@
 package com.giantmachines.biblio.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.giantmachines.biblio.serializers.ReviewSerializer;
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
+@JsonSerialize(using = ReviewSerializer.class)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne
+    @NonNull
+    @OneToOne(fetch = FetchType.EAGER)
     private User reviewer;
+    @NonNull
     private int value;
+    @NonNull
     private String comments;
+    private long reviewTime;
+
+    @PrePersist
+    private void addReviewTime(){
+        this.reviewTime = new Date().getTime();
+    }
 
     public Review(User reviewer, int value, String comments) {
         this.reviewer = reviewer;
@@ -34,5 +49,9 @@ public class Review {
 
     public String getComments(){
         return comments;
+    }
+
+    public long getReviewTime() {
+        return reviewTime;
     }
 }
