@@ -1,5 +1,7 @@
 package com.giantmachines.biblio.model;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,9 +9,12 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne
+    @NonNull
+    @OneToOne(fetch = FetchType.EAGER)
     private User reviewer;
+    @NonNull
     private int value;
+    @NonNull
     private String comments;
 
     public Review(User reviewer, int value, String comments) {

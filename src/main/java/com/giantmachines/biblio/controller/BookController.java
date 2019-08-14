@@ -1,5 +1,6 @@
 package com.giantmachines.biblio.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.giantmachines.biblio.model.Author;
 import com.giantmachines.biblio.model.Book;
 import com.giantmachines.biblio.model.Review;
@@ -37,7 +38,7 @@ public class BookController extends AbstractBaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getById(@PathVariable long id) {
-        return this.buildOkResponse(this.service.getById(id));
+        return this.buildOkResponse(new BookDetailsDto(this.service.getById(id)));
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -70,15 +71,13 @@ public class BookController extends AbstractBaseController {
         private String title;
         private Author author;
         private String image;
-        /**
-         * Average rating
-         */
-        private double rating;
-        /**
-         * Book status value
-         */
+        /** Average rating */
+        private double averageRating;
+        /** Book status value */
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String status;
-        private boolean userItem = false;  //TODO
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        private Boolean userItem = null;
 
         BookDto(final Book book) {
             String userName = BookController.this.currentUser.get();
@@ -86,14 +85,15 @@ public class BookController extends AbstractBaseController {
             this.title = book.getTitle();
             this.author = book.getAuthor();
             this.image = book.getImage();
-            if (!userName.equals("anonymous")){
+            if (userName != null){
+                this.userItem = false;
                 this.status = book.getStatus().getValue().toString();
                 if (book.getStatus().getUser() != null
                         && userName.equals(book.getStatus().getUser().getEmail())) {
                     this.userItem = true;
                 }
             }
-            this.rating = book.getReviews().stream().mapToDouble(Review::getValue).average().orElse(-1.0);
+            this.averageRating = book.getReviews().stream().mapToDouble(Review::getValue).average().orElse(-1.0);
         }
 
         public long getId() {
@@ -108,8 +108,8 @@ public class BookController extends AbstractBaseController {
             return image;
         }
 
-        public double getRating() {
-            return rating;
+        public double getAverageRating() {
+            return averageRating;
         }
 
         public String getStatus() {
@@ -120,8 +120,20 @@ public class BookController extends AbstractBaseController {
             return title;
         }
 
-        public boolean isUserItem() {
+        public Boolean isUserItem() {
             return userItem;
+        }
+    }
+
+    private class BookDetailsDto extends BookDto{
+        private List<Review> reviews;
+        public BookDetailsDto(Book book) {
+            super(book);
+            this.reviews = book.getReviews();
+        }
+
+        public List<Review> getReviews() {
+            return reviews;
         }
     }
 }
