@@ -95,4 +95,9 @@ public class BookControllerIT {
                 .andExpect(jsonPath("$.reviews[0].rating", is(5)))
                 .andExpect(jsonPath("$.reviews[0].reviewer", is("Philip Ford")));
     }
+
+    @Test
+    public void shuuld_save_a_new_review() throws Exception{
+
+    }
 }

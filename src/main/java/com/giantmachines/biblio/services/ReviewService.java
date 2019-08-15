@@ -14,20 +14,21 @@ public class ReviewService {
         this.repository = repository;
     }
 
-    public Review getRById(long id){
+    public Review getById(long id){
         return this.repository.findById(id).orElse(null);
     }
 
     @Transactional
-    public Review save(Review review){
-        return this.repository.save(review);
-    }
-
-    @Transactional
-    public void delete(long id){
-        Review review = this.repository.findById(id).orElse(null);
-        if (review != null) {
-            this.repository.delete(review);
+    public Review update(Review review) {
+        Review current = repository.findById(review.getId()).orElse(null);
+        if (current == null) {
+            throw new IllegalArgumentException("Cannot save now reviews");
         }
+        Review.ReviewBuilder builder = new Review.ReviewBuilder(current);
+        builder
+                .setValue(review.getValue())
+                .setComments(review.getComments());
+
+        return this.repository.save(new Review(builder));
     }
 }

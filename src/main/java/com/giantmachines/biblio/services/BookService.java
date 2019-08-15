@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Provides services for retrieving and updating books
@@ -80,6 +81,16 @@ public class BookService {
 
 
     @Transactional
+    public Book addReview(Book book, Review review){
+        List<Review> reviews = book.getReviews();
+        reviews.add(review);
+        Book.BookBuilder builder = new Book.BookBuilder(book);
+        builder.setReviews(reviews);
+        return this.repository.save(new Book(builder));
+    }
+
+
+    @Transactional
     public Book unregister(Book book) throws PersistenceException {
         BookStatus status = new BookStatus(Status.DEACTIVATED, book);
         statusService.save(new BookStatus(book.getStatus()));
@@ -91,7 +102,13 @@ public class BookService {
 
     @Transactional
     public Book deleteReview(long bookId, long id){
-        this.reviewService.delete(id);
-        return this.getById(bookId);
+        Book book = this.getById(bookId);
+        List<Review> reviews = book
+                .getReviews()
+                .stream()
+                .filter(review -> review.getId() != id)
+                .collect(Collectors.toList());
+        Book.BookBuilder builder = new Book.BookBuilder(book).setReviews(reviews);
+        return this.repository.save(new Book(builder));
     }
 }

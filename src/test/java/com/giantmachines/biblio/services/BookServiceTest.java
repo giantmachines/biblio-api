@@ -2,8 +2,12 @@ package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.dao.AuthorRepository;
+import com.giantmachines.biblio.dao.ReviewRepository;
+import com.giantmachines.biblio.dao.UserRepository;
 import com.giantmachines.biblio.model.Author;
 import com.giantmachines.biblio.model.Book;
+import com.giantmachines.biblio.model.Review;
+import com.giantmachines.biblio.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,12 @@ public class BookServiceTest {
 
     @Autowired
     AuthorRepository authorRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
 
     @Test
@@ -98,7 +108,36 @@ public class BookServiceTest {
         assertFalse(titles.contains("Refactoring"));
     }
 
-    public void should_return_checkout_status_only_if_user_is_logged_in(){
-
+    @Test
+    public void should_return_checkout_status(){
+        List<Book> books = this.service.getAll();
+        for (Book book : books){
+            assertNotNull(book.getStatus());
+        }
     }
+
+    @Test
+    public void should_save_a_new_review(){
+        String comment = "A hated it.";
+        User user = this.userRepository.findById(1L).get();
+        Review review = new Review(user, 2, comment);
+        Book book = service.getById(3L);
+        book = service.addReview(book, review);
+        review = book.getReviews().get(0);
+        assertNotNull(review.getReviewer());
+        assertNotEquals(0, review.getTimeCreated());
+        assertNotEquals(0, review.getTimeUpdated());
+        assertEquals(comment, review.getComments());
+    }
+
+
+    @Test
+    @Sql({"classpath:tests.sql"})
+    public void should_delete_an_existing_review(){
+        assertEquals(1, service.getById(3L).getReviews().size());  // A control
+        Review review = reviewRepository.findById(3L).get();
+        service.deleteReview(3L, review.getId());
+        assertEquals(0, service.getById(3L).getReviews().size());
+    }
+
 }
