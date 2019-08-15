@@ -26,11 +26,7 @@ public class Review {
 
     @PrePersist
     private void setTimeCreated(){
-        this.timeCreated = new Date().getTime();
-    }
-
-    @PreUpdate
-    private void setTimeUpdated(){
+        this.timeCreated = this.timeCreated == null ? new Date().getTime() : this.timeCreated;
         this.timeUpdated = new Date().getTime();
     }
 
