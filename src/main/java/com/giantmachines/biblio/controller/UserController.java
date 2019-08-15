@@ -11,6 +11,7 @@ public class UserController extends AbstractBaseController{
 
     private UserService service;
 
+
     public UserController(UserService service) {
         this.service = service;
     }
@@ -29,7 +30,7 @@ public class UserController extends AbstractBaseController{
     @RequestMapping(value="/{id}", method = RequestMethod.PUT)
     public ResponseEntity logout(@PathVariable long id){
         User user = this.service.getById(id);
-        this.service.setStatus(user, false);;
+        this.service.setStatus(user, false);
         return this.buildOkResponse(user);
     }
 
@@ -38,12 +39,17 @@ public class UserController extends AbstractBaseController{
      * for historical reasons.  In this way, reviews from former users remain unchanged.
      *
      * @param id    the user to remove
-     * @return
+     * @return      a ResponseEntity
      */
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
     public ResponseEntity update(@PathVariable long id){
         User user = this.service.getById(id);
         this.service.deactivate(user);
         return this.buildCreatedResponse(id);
+    }
+
+    @RequestMapping(value = "/{userId}/reviews", method = RequestMethod.GET)
+    public ResponseEntity getUserReviews(@PathVariable("userId") long userId){
+        return this.buildOkResponse(this.service.getUserReviews(userId));
     }
 }

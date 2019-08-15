@@ -1,7 +1,6 @@
 package com.giantmachines.biblio.dao;
 
 import com.giantmachines.biblio.model.Book;
-import org.hibernate.annotations.Subselect;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
