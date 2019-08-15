@@ -20,11 +20,16 @@ public class Review {
     private int value;
     @NonNull
     private String comments;
-    private long reviewTime;
+    private Long timeCreated;
+    @Column(name = "last_updated")
+    private Long timeUpdated;
 
     @PrePersist
-    private void addReviewTime(){
-        this.reviewTime = new Date().getTime();
+    private void updateTimes(){
+       if (this.timeCreated == 0) {
+           this.timeCreated = new Date().getTime();
+       }
+       this.timeUpdated = new Date().getTime();
     }
 
     public Review(User reviewer, int value, String comments) {
@@ -51,7 +56,11 @@ public class Review {
         return comments;
     }
 
-    public long getReviewTime() {
-        return reviewTime;
+    public long getTimeCreated() {
+        return timeCreated;
+    }
+
+    public long getTimeUpdated() {
+        return timeUpdated;
     }
 }

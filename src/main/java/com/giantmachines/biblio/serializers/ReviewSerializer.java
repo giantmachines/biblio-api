@@ -23,7 +23,7 @@ public class ReviewSerializer extends JsonSerializer<Review> {
         gen.writeStringField("reviewer", reviewer);
         gen.writeNumberField("rating", review.getValue());
         gen.writeStringField("comments", review.getComments());
-        gen.writeNumberField("reviewTime", review.getReviewTime());  // TODO:  handle client timezone
+        gen.writeNumberField("createdAt", review.getTimeCreated());  // TODO:  handle client timezone
         if (userName != null && review.getReviewer().getEmail().equals(currentUser.get())) {
             gen.writeBooleanField("highlight", true);
         }

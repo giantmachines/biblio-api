@@ -1,10 +1,7 @@
 package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.dao.BookRepository;
-import com.giantmachines.biblio.model.Author;
-import com.giantmachines.biblio.model.Book;
-import com.giantmachines.biblio.model.BookStatus;
-import com.giantmachines.biblio.model.Status;
+import com.giantmachines.biblio.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,14 +21,20 @@ public class BookService {
     private BookRepository repository;
     private AuthorService authorService;
     private StatusService statusService;
+    private ReviewService reviewService;
 
 
     @Autowired
-    public BookService(BookRepository repository, AuthorService authorService, StatusService statusService) {
+    public BookService(BookRepository repository,
+                       AuthorService authorService,
+                       StatusService statusService,
+                       ReviewService reviewService) {
         this.repository = repository;
         this.authorService = authorService;
         this.statusService = statusService;
+        this.reviewService = reviewService;
     }
+
 
 
     public List<Book> getAll(){
@@ -84,5 +87,11 @@ public class BookService {
         Book.BookBuilder builder = new Book.BookBuilder(book);
         builder.setStatus(status);
         return this.repository.save(new Book(builder));
+    }
+
+    @Transactional
+    public Book deleteReview(long bookId, long id){
+        this.reviewService.delete(id);
+        return this.getById(bookId);
     }
 }
