@@ -79,11 +79,12 @@ public class BookController extends AbstractBaseController {
     @RequestMapping(value = "{bookId}/review", method = RequestMethod.POST)
     public ResponseEntity saveReview(@PathVariable("bookId") long bookId, @RequestBody Review review){
         Book book = this.service.getById(bookId);
-        return this.buildOkResponse(this.service.addReview(book, review));
+        book = this.service.addReview(book, review);
+        return this.buildOkResponse(new BookDetailsDto(book));
     }
 
 
-    @RequestMapping(value = "{bookId}/review/", method = RequestMethod.PUT)
+    @RequestMapping(value = "{bookId}/review", method = RequestMethod.PUT)
     public ResponseEntity updateReview(@PathVariable("bookId") long bookId, @RequestBody Review review) throws Exception{
         Review current = this.reviewService.getById(review.getId());
         if (current == null){
@@ -91,15 +92,15 @@ public class BookController extends AbstractBaseController {
         }
         this.reviewService.update(review);
         Book book = this.service.getById(bookId);
-        return this.buildOkResponse(book);
+        return this.buildOkResponse(new BookDetailsDto(book));
     }
 
 
-    @RequestMapping(value = "{bookId}/review/s{reviewId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "{bookId}/review/{reviewId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteReview(@PathVariable("bookId") long bookId,
                                        @PathVariable("reviewId") long reviewId){
         Book book = this.service.deleteReview(bookId, reviewId);
-        return this.buildOkResponse(book);
+        return this.buildOkResponse(new BookDetailsDto(book));
     }
 
 
