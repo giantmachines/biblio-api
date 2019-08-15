@@ -1,10 +1,7 @@
 package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.dao.BookRepository;
-import com.giantmachines.biblio.model.Author;
-import com.giantmachines.biblio.model.Book;
-import com.giantmachines.biblio.model.BookStatus;
-import com.giantmachines.biblio.model.Status;
+import com.giantmachines.biblio.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Provides services for retrieving and updating books
@@ -24,14 +22,20 @@ public class BookService {
     private BookRepository repository;
     private AuthorService authorService;
     private StatusService statusService;
+    private ReviewService reviewService;
 
 
     @Autowired
-    public BookService(BookRepository repository, AuthorService authorService, StatusService statusService) {
+    public BookService(BookRepository repository,
+                       AuthorService authorService,
+                       StatusService statusService,
+                       ReviewService reviewService) {
         this.repository = repository;
         this.authorService = authorService;
         this.statusService = statusService;
+        this.reviewService = reviewService;
     }
+
 
 
     public List<Book> getAll(){
@@ -77,12 +81,34 @@ public class BookService {
 
 
     @Transactional
+    public Book addReview(Book book, Review review){
+        List<Review> reviews = book.getReviews();
+        reviews.add(review);
+        Book.BookBuilder builder = new Book.BookBuilder(book);
+        builder.setReviews(reviews);
+        return this.repository.save(new Book(builder));
+    }
+
+
+    @Transactional
     public Book unregister(Book book) throws PersistenceException {
         BookStatus status = new BookStatus(Status.DEACTIVATED, book);
         statusService.save(new BookStatus(book.getStatus()));
         statusService.save(status);
         Book.BookBuilder builder = new Book.BookBuilder(book);
         builder.setStatus(status);
+        return this.repository.save(new Book(builder));
+    }
+
+    @Transactional
+    public Book deleteReview(long bookId, long id){
+        Book book = this.getById(bookId);
+        List<Review> reviews = book
+                .getReviews()
+                .stream()
+                .filter(review -> review.getId() != id)
+                .collect(Collectors.toList());
+        Book.BookBuilder builder = new Book.BookBuilder(book).setReviews(reviews);
         return this.repository.save(new Book(builder));
     }
 }

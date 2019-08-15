@@ -1,6 +1,10 @@
 package com.giantmachines.biblio.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.giantmachines.biblio.Application;
+import com.giantmachines.biblio.dao.UserRepository;
+import com.giantmachines.biblio.model.User;
+import com.giantmachines.biblio.services.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.hasSize;
@@ -34,6 +41,10 @@ public class BookControllerIT {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Before
     public void setUp() throws Exception {
@@ -94,5 +105,61 @@ public class BookControllerIT {
                 .andExpect(jsonPath("$.reviews[0].highlight", is(true)))
                 .andExpect(jsonPath("$.reviews[0].rating", is(5)))
                 .andExpect(jsonPath("$.reviews[0].reviewer", is("Philip Ford")));
+    }
+
+    @Test
+    public void should_save_a_new_review() throws Exception{
+        Map<String, Object> values = new HashMap<>();
+        values.put("reviewer", userRepository.findById(1L).get());
+        values.put("comments", "Booooring.");
+        values.put("value", "1");
+        String json = new ObjectMapper().writeValueAsString(values);
+
+        mvc.perform(MockMvcRequestBuilders.post("/books/1/review")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("The Iliad")))
+                .andExpect(jsonPath("$.author.firstName", is("Homer")))
+                .andExpect(jsonPath("$.image", is("http://localhost/biblio/books/images/1")))
+                .andExpect(jsonPath("$.averageRating", is(3.0)))
+                .andExpect(jsonPath("$.reviews", hasSize(2)))
+                .andExpect(jsonPath("$.reviews[1].highlight", is(true)))
+                .andExpect(jsonPath("$.reviews[1].rating", is(1)))
+                .andExpect(jsonPath("$.reviews[1].reviewer", is("Philip Ford")));
+    }
+
+    @Test
+    public void should_update_an_existing_review() throws Exception{
+        Map<String, String> reviewMap = new HashMap<>();
+        reviewMap.put("id", "1");
+        reviewMap.put("comments", "Booooring.");
+        reviewMap.put("value", "2");
+        String json = new ObjectMapper().writeValueAsString(reviewMap);
+
+        mvc.perform(MockMvcRequestBuilders.put("/books/1/review")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("The Iliad")))
+                .andExpect(jsonPath("$.author.firstName", is("Homer")))
+                .andExpect(jsonPath("$.image", is("http://localhost/biblio/books/images/1")))
+                .andExpect(jsonPath("$.averageRating", is(2.0)))
+                .andExpect(jsonPath("$.reviews", hasSize(1)))
+                .andExpect(jsonPath("$.reviews[0].highlight", is(true)))
+                .andExpect(jsonPath("$.reviews[0].rating", is(2)))
+                .andExpect(jsonPath("$.reviews[0].reviewer", is("Philip Ford")));
+    }
+
+    @Test
+    @Sql({"classpath:tests.sql"})
+    public void should_delete_a_specified_review() throws Exception{
+        mvc.perform(MockMvcRequestBuilders.delete("/books/3/review/3")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.averageRating").doesNotExist())
+                .andExpect(jsonPath("$.reviews", hasSize(0)));
     }
 }

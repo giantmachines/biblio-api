@@ -20,10 +20,12 @@ public class ReviewSerializer extends JsonSerializer<Review> {
         String userName = currentUser.get();
         String reviewer = String.format("%s %s", review.getReviewer().getFirstName(), review.getReviewer().getLastName());
         gen.writeStartObject();
+        gen.writeNumberField("id", review.getId());
         gen.writeStringField("reviewer", reviewer);
         gen.writeNumberField("rating", review.getValue());
         gen.writeStringField("comments", review.getComments());
-        gen.writeNumberField("reviewTime", review.getReviewTime());  // TODO:  handle client timezone
+        gen.writeNumberField("createdAt", review.getTimeCreated());  // TODO:  handle client timezone
+        gen.writeNumberField("updatedAt", review.getTimeUpdated());
         if (userName != null && review.getReviewer().getEmail().equals(currentUser.get())) {
             gen.writeBooleanField("highlight", true);
         }

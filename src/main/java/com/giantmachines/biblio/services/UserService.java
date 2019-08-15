@@ -1,11 +1,14 @@
 package com.giantmachines.biblio.services;
 
+import com.giantmachines.biblio.dao.ReviewRepository;
 import com.giantmachines.biblio.dao.UserRepository;
+import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
+import java.util.List;
 
 /**
  * Provides services for retrieving and updating userrs
@@ -15,9 +18,11 @@ import javax.persistence.PersistenceException;
 public class UserService {
 
     private UserRepository repository;
+    private ReviewRepository reviewRepository;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, ReviewRepository reviewRepository) {
         this.repository = repository;
+        this.reviewRepository = reviewRepository;
     }
 
     public User getById(long id){
@@ -49,5 +54,9 @@ public class UserService {
     public User deactivate(User user) throws PersistenceException{
         User.UserBuilder builder = new User.UserBuilder(user).setActive(false);
         return this.repository.save(new User(builder));
+    }
+
+    public List<Review> getUserReviews(long id){
+        return this.reviewRepository.getByUserId(id);
     }
 }
