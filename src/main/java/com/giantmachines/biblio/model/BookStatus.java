@@ -26,6 +26,11 @@ public class BookStatus {
     // but I want to retrieve from the database only the latest status with each book, and so far this is
     // the least bad way to do it.
 
+    @PrePersist
+    private void addUpdateTime(){
+        this.lastUpdated = new Date().getTime();
+    }
+
 
     public BookStatus(Status value, Book book, User user) {
         this(value, book);
@@ -35,7 +40,6 @@ public class BookStatus {
     public BookStatus(Status value, Book book) {
         this.value = value;
         this.book = book;
-        this.lastUpdated = new Date().getTime();
         this.latest = true;
     }
 
