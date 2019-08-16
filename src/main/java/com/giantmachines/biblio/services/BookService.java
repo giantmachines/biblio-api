@@ -127,11 +127,15 @@ public class BookService {
 
 
     @Transactional
-    public Book checkin(Book book, long userId) throws IllegalStateException{
+    public Book checkin(Book book, long userId) throws IllegalStateException, IllegalAccessException{
         Book current = this.getById(book.getId());
         if (current.getStatus().getValue().equals(Status.AVAILABLE)){
             throw new IllegalStateException("Attempt to checkin a book that was not checked out.");
         }
+        if (current.getStatus().getUser().getId() != userId){
+            throw new IllegalAccessException("Attempt to checkin a book that was checked out by another user.");
+        }
+
         Book.BookBuilder builder = new Book.BookBuilder(current);
         User user =  this.userService.getById(userId);
         builder.setStatus(new BookStatus(Status.AVAILABLE, current, user));

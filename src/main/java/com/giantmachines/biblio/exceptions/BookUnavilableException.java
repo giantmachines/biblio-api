@@ -1,9 +1,12 @@
 package com.giantmachines.biblio.exceptions;
 
 import com.giantmachines.biblio.model.Book;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class BookUnavilableException extends Exception{
-    Book book;
+    private Book book;
 
     public BookUnavilableException(Book book) {
         this.book = book;

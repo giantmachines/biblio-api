@@ -168,8 +168,21 @@ public class BookServiceTest {
             Book book = service.getById(1L);
             book = service.checkin(book, 1L);
             assertEquals(Status.AVAILABLE, book.getStatus().getValue());
-        } catch (IllegalStateException e){
+        } catch (Exception e){
             fail("An exception should not be thrown.");
+        }
+    }
+
+    @Test
+    @Sql({"classpath:tests.sql"})
+    @DirtiesContext
+    public void should_not_checkin_books_that_are_checked_out_by_others(){
+        try {
+            Book book = service.getById(1L);
+            book = service.checkin(book, 2L);
+            fail("We should not reach this point.");
+        } catch (Exception e){
+            assertTrue(e instanceof IllegalAccessException);
         }
     }
 }

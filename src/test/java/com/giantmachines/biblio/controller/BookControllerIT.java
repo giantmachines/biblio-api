@@ -165,4 +165,51 @@ public class BookControllerIT {
                 .andExpect(jsonPath("$.averageRating").doesNotExist())
                 .andExpect(jsonPath("$.reviews", hasSize(0)));
     }
+
+
+    @Test
+    @Sql({"classpath:tests.sql"})
+    @DirtiesContext
+    public void should_checkout_a_specified_book() throws Exception{
+        mvc.perform(MockMvcRequestBuilders.put("/books/2/checkout")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(2)))
+                .andExpect(jsonPath("$.title", is("Patterns of Enterprise Software")))
+                .andExpect(jsonPath("$.author.firstName", is("Martin")))
+                .andExpect(jsonPath("$.author.lastName", is("Fowler")))
+                .andExpect(jsonPath("$.image", is("http://localhost/biblio/books/images/2")))
+                .andExpect(jsonPath("$.status", is("UNAVAILABLE")));
+    }
+
+    @Test
+    @DirtiesContext
+    public void should_not_checkout_a_book_that_is_not_available() throws Exception{
+        mvc.perform(MockMvcRequestBuilders.put("/books/1/checkout")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @Sql({"classpath:tests.sql"})
+    @DirtiesContext
+    public void should_check_in_a_specified_book() throws Exception{
+        mvc.perform(MockMvcRequestBuilders.put("/books/1/checkin")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("The Iliad")))
+                .andExpect(jsonPath("$.author.firstName", is("Homer")))
+                .andExpect(jsonPath("$.image", is("http://localhost/biblio/books/images/1")))
+                .andExpect(jsonPath("$.status", is("AVAILABLE")));
+    }
+
+    @Test
+    @Sql({"classpath:tests.sql"})
+    @DirtiesContext
+    public void should_not_checkin_a_book_that_is_checked_out_by_someone_else() throws Exception{
+        mvc.perform(MockMvcRequestBuilders.put("/books/4/checkin")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
+    }
 }
