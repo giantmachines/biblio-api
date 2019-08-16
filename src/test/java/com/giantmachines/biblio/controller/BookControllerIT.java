@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -131,6 +132,7 @@ public class BookControllerIT {
     }
 
     @Test
+    @DirtiesContext
     public void should_update_an_existing_review() throws Exception{
         Map<String, String> reviewMap = new HashMap<>();
         reviewMap.put("id", "1");
@@ -155,8 +157,9 @@ public class BookControllerIT {
 
     @Test
     @Sql({"classpath:tests.sql"})
+    @DirtiesContext
     public void should_delete_a_specified_review() throws Exception{
-        mvc.perform(MockMvcRequestBuilders.delete("/books/3/review/3")
+        mvc.perform(MockMvcRequestBuilders.delete("/books/3/review/2")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.averageRating").doesNotExist())
