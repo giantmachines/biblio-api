@@ -116,6 +116,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DirtiesContext
     public void should_save_a_new_review(){
         String comment = "A hated it.";
         User user = this.userRepository.findById(1L).get();

@@ -7,7 +7,6 @@ import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.security.CurrentUser;
 import com.giantmachines.biblio.services.BookService;
 import com.giantmachines.biblio.services.ReviewService;
-import com.giantmachines.biblio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,15 +51,10 @@ public class BookController extends AbstractBaseController {
         return this.buildOkResponse(new BookDetailsDto(this.service.getById(id)));
     }
 
-    @RequestMapping(value = "/{id}/reviews", method = RequestMethod.GET)
-    public ResponseEntity getReviewsByBookId(@PathVariable("id") long id){
+    @RequestMapping(value = "/{bookId}/reviews", method = RequestMethod.GET)
+    public ResponseEntity getReviewsByBookId(@PathVariable("bookId") long id){
         Book book = this.service.getById(id);
         return this.buildOkResponse(book.getReviews());
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity search() {
-        return null;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -73,16 +67,17 @@ public class BookController extends AbstractBaseController {
      * Performs a "soft delete."  Does not remove the book from the database, for
      * historical reasons, but sets the book to "inactive."
      *
-     * @param book          the book to remove.
+     * @param bookId        the id of book to remove.
      * @return              a ResponseEntity
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity delete(@PathVariable Book book) {
+    @RequestMapping(value = "/{bookId}", method = RequestMethod.DELETE)
+    public ResponseEntity delete(@PathVariable("bookId") long bookId) {
+        Book book = this.service.getById(bookId);
         this.service.unregister(book);
         return this.buildCreatedResponse(book.getId());
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "{bookId}/review", method = RequestMethod.POST)
     public ResponseEntity saveReview(@PathVariable("bookId") long bookId, @RequestBody Review review){
         Book book = this.service.getById(bookId);
@@ -90,7 +85,7 @@ public class BookController extends AbstractBaseController {
         return this.buildOkResponse(new BookDetailsDto(book));
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "{bookId}/review", method = RequestMethod.PUT)
     public ResponseEntity updateReview(@PathVariable("bookId") long bookId, @RequestBody Review review) throws Exception{
         Review current = this.reviewService.getById(review.getId());
@@ -102,7 +97,7 @@ public class BookController extends AbstractBaseController {
         return this.buildOkResponse(new BookDetailsDto(book));
     }
 
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "{bookId}/review/{reviewId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteReview(@PathVariable("bookId") long bookId,
                                        @PathVariable("reviewId") long reviewId){
@@ -113,9 +108,6 @@ public class BookController extends AbstractBaseController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{bookId}/checkout", method = RequestMethod.PUT)
     public ResponseEntity checkout(@PathVariable("bookId") long bookId) throws Exception{
-        if (currentUser.get() == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Attempt to checkout by unauthenticated user.");
-        }
         Book book = this.service.getById(bookId);
         book = this.service.checkout(book, currentUser.getUserId());
         return this.buildOkResponse(new BookDetailsDto(book));
@@ -124,10 +116,6 @@ public class BookController extends AbstractBaseController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{bookId}/checkin", method = RequestMethod.PUT)
     public ResponseEntity checkin(@PathVariable("bookId") long bookId) throws Exception{
-        if (currentUser.get() == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Attempt to checkout by unauthenticated user.");
-        }
-
         Book book = this.service.getById(bookId);
         try {
             book = this.service.checkin(book, currentUser.getUserId());

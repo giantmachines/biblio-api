@@ -10,7 +10,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String title;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne
     private Author author;
     private String image;    // An image path or URL
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
