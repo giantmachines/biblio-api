@@ -1,6 +1,7 @@
 package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.dao.BookRepository;
+import com.giantmachines.biblio.exceptions.BookUnavilableException;
 import com.giantmachines.biblio.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,20 +23,19 @@ public class BookService {
     private BookRepository repository;
     private AuthorService authorService;
     private StatusService statusService;
-    private ReviewService reviewService;
+    private UserService userService;
 
 
     @Autowired
     public BookService(BookRepository repository,
                        AuthorService authorService,
                        StatusService statusService,
-                       ReviewService reviewService) {
+                       UserService userService) {
         this.repository = repository;
         this.authorService = authorService;
         this.statusService = statusService;
-        this.reviewService = reviewService;
+        this.userService = userService;
     }
-
 
 
     public List<Book> getAll(){
@@ -110,5 +110,35 @@ public class BookService {
                 .collect(Collectors.toList());
         Book.BookBuilder builder = new Book.BookBuilder(book).setReviews(reviews);
         return this.repository.save(new Book(builder));
+    }
+
+    @Transactional
+    public Book checkout(Book book, long userId) throws BookUnavilableException, PersistenceException{
+        Book current = this.getById(book.getId());
+        if (!current.getStatus().getValue().equals(Status.AVAILABLE)){
+            throw new BookUnavilableException(book);
+        }
+
+        Book.BookBuilder builder = new Book.BookBuilder(current);
+        User user =  this.userService.getById(userId);
+        builder.setStatus(new BookStatus(Status.UNAVAILABLE, current, user));
+        return this.save(new Book(builder));
+    }
+
+
+    @Transactional
+    public Book checkin(Book book, long userId) throws IllegalStateException, IllegalAccessException{
+        Book current = this.getById(book.getId());
+        if (current.getStatus().getValue().equals(Status.AVAILABLE)){
+            throw new IllegalStateException("Attempt to checkin a book that was not checked out.");
+        }
+        if (current.getStatus().getUser().getId() != userId){
+            throw new IllegalAccessException("Attempt to checkin a book that was checked out by another user.");
+        }
+
+        Book.BookBuilder builder = new Book.BookBuilder(current);
+        User user =  this.userService.getById(userId);
+        builder.setStatus(new BookStatus(Status.AVAILABLE, current, user));
+        return this.save(new Book(builder));
     }
 }
