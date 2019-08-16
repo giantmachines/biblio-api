@@ -7,6 +7,7 @@ import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.security.CurrentUser;
 import com.giantmachines.biblio.services.BookService;
 import com.giantmachines.biblio.services.ReviewService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -126,6 +127,7 @@ public class BookController extends AbstractBaseController {
     }
 
 
+    @Getter
     private class BookDto {
         private long id;
         private String title;
@@ -157,45 +159,14 @@ public class BookController extends AbstractBaseController {
             double rating = book.getReviews().stream().mapToDouble(Review::getValue).average().orElse(-1.0);
             this.averageRating = rating > 0 ? rating : null;
         }
-
-        public long getId() {
-            return id;
-        }
-
-        public Author getAuthor() {
-            return author;
-        }
-
-        public String getImage() {
-            return image;
-        }
-
-        public Double getAverageRating() {
-            return averageRating;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public Boolean getHighlight() {
-            return highlight;
-        }
     }
 
+    @Getter
     private class BookDetailsDto extends BookDto{
         private List<Review> reviews;
         BookDetailsDto(Book book) {
             super(book);
             this.reviews = book.getReviews();
-        }
-
-        public List<Review> getReviews() {
-            return reviews;
         }
     }
 }
