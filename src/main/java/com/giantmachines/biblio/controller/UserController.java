@@ -16,23 +16,19 @@ public class UserController extends AbstractBaseController{
         this.service = service;
     }
 
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getById(@PathVariable long id){
         User user = service.getById(id);
         return this.buildOkResponse(user);
     }
 
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity add(@RequestBody User user){
         return this.buildCreatedResponse(user.getId());
     }
 
-    @RequestMapping(value="/{id}", method = RequestMethod.PUT)
-    public ResponseEntity logout(@PathVariable long id){
-        User user = this.service.getById(id);
-        this.service.setStatus(user, false);
-        return this.buildOkResponse(user);
-    }
 
     /**
      * Performs a "soft delete" on the specified user.  Does not delete the user from the database,
@@ -47,6 +43,7 @@ public class UserController extends AbstractBaseController{
         this.service.deactivate(user);
         return this.buildCreatedResponse(id);
     }
+
 
     @RequestMapping(value = "/{userId}/reviews", method = RequestMethod.GET)
     public ResponseEntity getUserReviews(@PathVariable("userId") long userId){

@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class BookUnavilableException extends Exception{
+public class BookUnavailableException extends Exception{
     private Book book;
 
-    public BookUnavilableException(Book book) {
+    public BookUnavailableException(Book book) {
         this.book = book;
     }
 
