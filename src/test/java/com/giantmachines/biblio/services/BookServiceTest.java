@@ -4,7 +4,7 @@ import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.dao.AuthorRepository;
 import com.giantmachines.biblio.dao.ReviewRepository;
 import com.giantmachines.biblio.dao.UserRepository;
-import com.giantmachines.biblio.exceptions.BookUnavilableException;
+import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -158,7 +158,7 @@ public class BookServiceTest {
             service.checkout(book, 2L);
             fail("We should not reach this point.");
         } catch (Exception e){
-            assertTrue(e instanceof BookUnavilableException);
+            assertTrue(e instanceof BookUnavailableException);
         }
     }
 
