@@ -7,9 +7,13 @@ import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.security.CurrentUser;
 import com.giantmachines.biblio.services.BookService;
 import com.giantmachines.biblio.services.ReviewService;
+import com.giantmachines.biblio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,11 +30,14 @@ public class BookController extends AbstractBaseController {
 
 
     @Autowired
-    public BookController(BookService service, ReviewService reviewService, CurrentUser currentUser) {
+    public BookController(BookService service,
+                          ReviewService reviewService,
+                          CurrentUser currentUser) {
         this.service = service;
         this.reviewService = reviewService;
         this.currentUser = currentUser;
     }
+
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getAll() {
@@ -100,6 +107,33 @@ public class BookController extends AbstractBaseController {
     public ResponseEntity deleteReview(@PathVariable("bookId") long bookId,
                                        @PathVariable("reviewId") long reviewId){
         Book book = this.service.deleteReview(bookId, reviewId);
+        return this.buildOkResponse(new BookDetailsDto(book));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/{bookId}/checkout", method = RequestMethod.PUT)
+    public ResponseEntity checkout(@PathVariable("bookId") long bookId) throws Exception{
+        if (currentUser.get() == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Attempt to checkout by unauthenticated user.");
+        }
+        Book book = this.service.getById(bookId);
+        book = this.service.checkout(book, currentUser.getUserId());
+        return this.buildOkResponse(new BookDetailsDto(book));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/{bookId}/checkin", method = RequestMethod.PUT)
+    public ResponseEntity checkin(@PathVariable("bookId") long bookId) throws Exception{
+        if (currentUser.get() == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Attempt to checkout by unauthenticated user.");
+        }
+
+        Book book = this.service.getById(bookId);
+        try {
+            book = this.service.checkin(book, currentUser.getUserId());
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        }
         return this.buildOkResponse(new BookDetailsDto(book));
     }
 
