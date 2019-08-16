@@ -13,8 +13,8 @@ public class Book {
     @ManyToOne(fetch = FetchType.EAGER)
     private Author author;
     private String image;    // An image path or URL
-    @OneToMany(fetch = FetchType.EAGER)
-    @OrderBy("reviewTime desc")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OrderBy("timeCreated desc")
     private List<Review> reviews = new ArrayList<>();
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "id")

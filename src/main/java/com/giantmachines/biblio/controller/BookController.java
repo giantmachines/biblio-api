@@ -6,6 +6,7 @@ import com.giantmachines.biblio.model.Book;
 import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.security.CurrentUser;
 import com.giantmachines.biblio.services.BookService;
+import com.giantmachines.biblio.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +21,14 @@ public class BookController extends AbstractBaseController {
 
     private String path = "books";
     private BookService service;
+    private ReviewService reviewService;
     private CurrentUser currentUser;
 
+
     @Autowired
-    public BookController(BookService service, CurrentUser currentUser) {
+    public BookController(BookService service, ReviewService reviewService, CurrentUser currentUser) {
         this.service = service;
+        this.reviewService = reviewService;
         this.currentUser = currentUser;
     }
 
@@ -39,6 +43,12 @@ public class BookController extends AbstractBaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getById(@PathVariable long id) {
         return this.buildOkResponse(new BookDetailsDto(this.service.getById(id)));
+    }
+
+    @RequestMapping(value = "/{id}/reviews", method = RequestMethod.GET)
+    public ResponseEntity getReviewsByBookId(@PathVariable("id") long id){
+        Book book = this.service.getById(id);
+        return this.buildOkResponse(book.getReviews());
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -63,6 +73,34 @@ public class BookController extends AbstractBaseController {
     public ResponseEntity delete(@PathVariable Book book) {
         this.service.unregister(book);
         return this.buildCreatedResponse(book.getId());
+    }
+
+
+    @RequestMapping(value = "{bookId}/review", method = RequestMethod.POST)
+    public ResponseEntity saveReview(@PathVariable("bookId") long bookId, @RequestBody Review review){
+        Book book = this.service.getById(bookId);
+        book = this.service.addReview(book, review);
+        return this.buildOkResponse(new BookDetailsDto(book));
+    }
+
+
+    @RequestMapping(value = "{bookId}/review", method = RequestMethod.PUT)
+    public ResponseEntity updateReview(@PathVariable("bookId") long bookId, @RequestBody Review review) throws Exception{
+        Review current = this.reviewService.getById(review.getId());
+        if (current == null){
+            throw new Exception("The resource was not found.");
+        }
+        this.reviewService.update(review);
+        Book book = this.service.getById(bookId);
+        return this.buildOkResponse(new BookDetailsDto(book));
+    }
+
+
+    @RequestMapping(value = "{bookId}/review/{reviewId}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteReview(@PathVariable("bookId") long bookId,
+                                       @PathVariable("reviewId") long reviewId){
+        Book book = this.service.deleteReview(bookId, reviewId);
+        return this.buildOkResponse(new BookDetailsDto(book));
     }
 
 
@@ -129,7 +167,7 @@ public class BookController extends AbstractBaseController {
 
     private class BookDetailsDto extends BookDto{
         private List<Review> reviews;
-        public BookDetailsDto(Book book) {
+        BookDetailsDto(Book book) {
             super(book);
             this.reviews = book.getReviews();
         }
