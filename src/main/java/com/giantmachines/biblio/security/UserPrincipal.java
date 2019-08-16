@@ -4,10 +4,16 @@ import com.giantmachines.biblio.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class UserPrincipal implements UserDetails {
     private User user;
+    private List<GrantedAuthority> authorities = new ArrayList<>();
+    {
+        authorities.add((GrantedAuthority) () -> "ROLE_USER");
+    }
 
     public UserPrincipal(User user) {
         this.user = user;
@@ -15,7 +21,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override

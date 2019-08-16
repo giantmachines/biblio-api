@@ -1,11 +1,10 @@
 package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.dao.BookRepository;
-import com.giantmachines.biblio.exceptions.BookUnavilableException;
+import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
@@ -113,10 +112,10 @@ public class BookService {
     }
 
     @Transactional
-    public Book checkout(Book book, long userId) throws BookUnavilableException, PersistenceException{
+    public Book checkout(Book book, long userId) throws BookUnavailableException, PersistenceException{
         Book current = this.getById(book.getId());
         if (!current.getStatus().getValue().equals(Status.AVAILABLE)){
-            throw new BookUnavilableException(book);
+            throw new BookUnavailableException(book);
         }
 
         Book.BookBuilder builder = new Book.BookBuilder(current);
