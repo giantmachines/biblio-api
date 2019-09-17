@@ -53,6 +53,11 @@ public class BookService {
     }
 
 
+    public boolean hasReviews(long id){
+        return this.getById(id).getReviews().size() > 0;
+    }
+
+
     @Transactional
     public Book save(Book book) throws PersistenceException {
         Author author = book.getAuthor();
@@ -81,6 +86,7 @@ public class BookService {
 
     @Transactional
     public Book addReview(Book book, Review review){
+        book = this.getById(book.getId());
         List<Review> reviews = book.getReviews();
         reviews.add(review);
         Book.BookBuilder builder = new Book.BookBuilder(book);

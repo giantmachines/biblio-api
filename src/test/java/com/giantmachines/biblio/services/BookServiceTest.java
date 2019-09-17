@@ -135,10 +135,10 @@ public class BookServiceTest {
     @Sql({"classpath:tests.sql"})
     @DirtiesContext
     public void should_delete_an_existing_review(){
-        assertEquals(1, service.getById(3L).getReviews().size());  // A control
+        assertTrue(service.hasReviews(3L));  // A control
         Review review = reviewRepository.findById(2L).get();
         service.deleteReview(3L, review.getId());
-        assertEquals(0, service.getById(3L).getReviews().size());
+        assertFalse(service.hasReviews(3L));
     }
 
     @Test
