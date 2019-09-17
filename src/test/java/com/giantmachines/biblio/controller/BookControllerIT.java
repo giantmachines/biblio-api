@@ -3,8 +3,6 @@ package com.giantmachines.biblio.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.dao.UserRepository;
-import com.giantmachines.biblio.model.User;
-import com.giantmachines.biblio.services.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
