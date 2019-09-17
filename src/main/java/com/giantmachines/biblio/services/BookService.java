@@ -67,12 +67,10 @@ public class BookService {
         // We want to ensure that every book has a status, and to update the status id needed.
         if (currentStatus == null || !currentStatus.getValue().equals(status.getValue())){
             this.statusService.save(status);
-            Book.BookBuilder builder = new Book.BookBuilder(book);
-            builder.setStatus(status);
+            book = book.toBuilder().status(status).build();
             if (currentStatus != null){
                 this.statusService.save(new BookStatus(currentStatus));
             }
-            book = new Book(builder);
         }
 
         return this.repository.save(book);
@@ -84,9 +82,10 @@ public class BookService {
         book = this.getById(book.getId());
         List<Review> reviews = book.getReviews();
         reviews.add(review);
-        Book.BookBuilder builder = new Book.BookBuilder(book);
-        builder.setReviews(reviews);
-        return this.repository.save(new Book(builder));
+        Book result = book.toBuilder()
+                .reviews(reviews)
+                .build();
+        return this.repository.save(result);
     }
 
 
@@ -95,9 +94,10 @@ public class BookService {
         BookStatus status = new BookStatus(Status.DEACTIVATED, book);
         statusService.save(new BookStatus(book.getStatus()));
         statusService.save(status);
-        Book.BookBuilder builder = new Book.BookBuilder(book);
-        builder.setStatus(status);
-        return this.repository.save(new Book(builder));
+        Book result = book.toBuilder()
+                .status(status)
+                .build();
+        return this.repository.save(result);
     }
 
     @Transactional
@@ -108,8 +108,8 @@ public class BookService {
                 .stream()
                 .filter(review -> review.getId() != id)
                 .collect(Collectors.toList());
-        Book.BookBuilder builder = new Book.BookBuilder(book).setReviews(reviews);
-        return this.repository.save(new Book(builder));
+        Book result = book.toBuilder().reviews(reviews).build();
+        return this.repository.save(result);
     }
 
     @Transactional
@@ -119,10 +119,11 @@ public class BookService {
             throw new BookUnavailableException(book);
         }
 
-        Book.BookBuilder builder = new Book.BookBuilder(current);
         User user =  this.userService.getById(userId);
-        builder.setStatus(new BookStatus(Status.UNAVAILABLE, current, user));
-        return this.save(new Book(builder));
+        Book result = current.toBuilder()
+                .status(new BookStatus(Status.UNAVAILABLE, current, user))
+                .build();
+        return this.save(result);
     }
 
 
@@ -136,10 +137,11 @@ public class BookService {
             throw new IllegalAccessException("Attempt to checkin a book that was checked out by another user.");
         }
 
-        Book.BookBuilder builder = new Book.BookBuilder(current);
         User user =  this.userService.getById(userId);
-        builder.setStatus(new BookStatus(Status.AVAILABLE, current, user));
-        return this.save(new Book(builder));
+        Book result = current.toBuilder()
+                .status(new BookStatus(Status.AVAILABLE, current, user))
+                .build();
+        return this.save(result);
     }
 
 

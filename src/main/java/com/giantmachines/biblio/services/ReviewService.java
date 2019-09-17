@@ -24,11 +24,11 @@ public class ReviewService {
         if (current == null) {
             throw new IllegalArgumentException("Cannot save now reviews");
         }
-        Review.ReviewBuilder builder = new Review.ReviewBuilder(current);
-        builder
-                .setValue(review.getValue())
-                .setComments(review.getComments());
 
-        return this.repository.save(new Review(builder));
+        Review result = current.toBuilder()
+                .value(review.getValue())
+                .comments(review.getComments())
+                .build();
+        return this.repository.save(result);
     }
 }
