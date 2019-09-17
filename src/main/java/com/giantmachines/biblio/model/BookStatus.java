@@ -1,12 +1,15 @@
 package com.giantmachines.biblio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "book_status")
+@Getter @NoArgsConstructor
 public class BookStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,33 +50,6 @@ public class BookStatus {
         this(that.value, that.book, that.user);
         this.latest = false;
         this.id = that.id;
-    }
-
-    public BookStatus() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public Status getValue() {
-        return value;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public Long getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public boolean isLatest() {
-        return latest;
     }
 }
 

@@ -125,8 +125,8 @@ public class BookServiceTest {
         book = service.addReview(book, review);
         review = book.getReviews().get(0);
         assertNotNull(review.getReviewer());
-        assertNotEquals(0, review.getTimeCreated());
-        assertNotEquals(0, review.getTimeUpdated());
+        assertNotEquals(0, (long) review.getTimeCreated());
+        assertNotEquals(0, (long) review.getTimeUpdated());
         assertEquals(comment, review.getComments());
     }
 

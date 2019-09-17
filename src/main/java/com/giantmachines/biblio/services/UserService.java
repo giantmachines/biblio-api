@@ -40,8 +40,7 @@ public class UserService {
 
     @Transactional
     public User setStatus(User user, boolean status){
-        User.UserBuilder builder = new User.UserBuilder(user).setOnline(status);
-        return repository.save(new User(builder));
+        return repository.save(user.toBuilder().online(status).build());
     }
 
     /**
@@ -52,8 +51,7 @@ public class UserService {
      */
     @Transactional
     public User deactivate(User user) throws PersistenceException{
-        User.UserBuilder builder = new User.UserBuilder(user).setActive(false);
-        return this.repository.save(new User(builder));
+        return this.repository.save(user.toBuilder().active(false).build());
     }
 
     public List<Review> getUserReviews(long id){
