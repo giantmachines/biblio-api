@@ -143,7 +143,7 @@ public class BookService {
     }
 
 
-    boolean hasReviews(long id){
+    public boolean hasReviews(long id){
         return this.getById(id).getReviews().size() > 0;
     }
 }
