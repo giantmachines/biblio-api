@@ -38,7 +38,7 @@ public class UserController extends AbstractBaseController{
      * @return      a ResponseEntity
      */
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity update(@PathVariable long id){
+    public ResponseEntity softDelete(@PathVariable long id){
         User user = this.service.getById(id);
         this.service.deactivate(user);
         return this.buildCreatedResponse(id);
