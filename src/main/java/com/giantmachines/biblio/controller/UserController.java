@@ -24,6 +24,7 @@ public class UserController extends AbstractBaseController{
     }
 
 
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity add(@RequestBody User user){
         return this.buildCreatedResponse(user.getId());

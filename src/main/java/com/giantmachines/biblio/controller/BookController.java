@@ -59,7 +59,7 @@ public class BookController extends AbstractBaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity save(@RequestBody Book book) throws Exception {
+    public ResponseEntity save(@RequestBody Book book) {
         this.service.save(book);
         return this.buildCreatedResponse(book.getId());
     }
@@ -116,7 +116,7 @@ public class BookController extends AbstractBaseController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{bookId}/checkin", method = RequestMethod.PUT)
-    public ResponseEntity checkin(@PathVariable("bookId") long bookId) throws Exception{
+    public ResponseEntity checkin(@PathVariable("bookId") long bookId) {
         Book book = this.service.getById(bookId);
         try {
             book = this.service.checkin(book, currentUser.getUserId());
