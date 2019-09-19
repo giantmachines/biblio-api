@@ -2,17 +2,15 @@ package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.dao.ReviewRepository;
 import com.giantmachines.biblio.model.Review;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReviewService {
-    private ReviewRepository repository;
-
-    public ReviewService(ReviewRepository repository) {
-        this.repository = repository;
-    }
+    private final ReviewRepository repository;
 
     public Review getById(long id){
         return this.repository.findById(id).orElse(null);

@@ -3,6 +3,7 @@ package com.giantmachines.biblio.services;
 import com.giantmachines.biblio.dao.BookRepository;
 import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,25 +17,14 @@ import java.util.stream.Collectors;
  * Provides services for retrieving and updating books
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BookService {
 
-    private BookRepository repository;
-    private AuthorService authorService;
-    private StatusService statusService;
-    private UserService userService;
-
-
-    @Autowired
-    public BookService(BookRepository repository,
-                       AuthorService authorService,
-                       StatusService statusService,
-                       UserService userService) {
-        this.repository = repository;
-        this.authorService = authorService;
-        this.statusService = statusService;
-        this.userService = userService;
-    }
+    private final BookRepository repository;
+    private final AuthorService authorService;
+    private final StatusService statusService;
+    private final UserService userService;
 
 
     public List<Book> getAll(){

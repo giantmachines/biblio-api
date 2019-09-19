@@ -2,19 +2,17 @@ package com.giantmachines.biblio.controller;
 
 import com.giantmachines.biblio.model.User;
 import com.giantmachines.biblio.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController extends AbstractBaseController{
 
-    private UserService service;
-
-
-    public UserController(UserService service) {
-        this.service = service;
-    }
+    private final UserService service;
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -22,7 +20,6 @@ public class UserController extends AbstractBaseController{
         User user = service.getById(id);
         return this.buildOkResponse(user);
     }
-
 
 
     @RequestMapping(method = RequestMethod.POST)

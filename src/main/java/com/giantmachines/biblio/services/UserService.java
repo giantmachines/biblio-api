@@ -4,6 +4,7 @@ import com.giantmachines.biblio.dao.ReviewRepository;
 import com.giantmachines.biblio.dao.UserRepository;
 import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,16 +15,12 @@ import java.util.List;
  * Provides services for retrieving and updating userrs
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
 
-    private UserRepository repository;
-    private ReviewRepository reviewRepository;
-
-    public UserService(UserRepository repository, ReviewRepository reviewRepository) {
-        this.repository = repository;
-        this.reviewRepository = reviewRepository;
-    }
+    private final UserRepository repository;
+    private final ReviewRepository reviewRepository;
 
     public User getById(long id){
         return this.repository.findById(id).orElse(null);

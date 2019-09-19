@@ -8,6 +8,7 @@ import com.giantmachines.biblio.security.CurrentUser;
 import com.giantmachines.biblio.services.BookService;
 import com.giantmachines.biblio.services.ReviewService;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,23 +21,14 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/books")
 public class BookController extends AbstractBaseController {
 
-    private String path = "books";
-    private BookService service;
-    private ReviewService reviewService;
-    private CurrentUser currentUser;
-
-
-    @Autowired
-    public BookController(BookService service,
-                          ReviewService reviewService,
-                          CurrentUser currentUser) {
-        this.service = service;
-        this.reviewService = reviewService;
-        this.currentUser = currentUser;
-    }
+    private final String path = "books";
+    private final BookService service;
+    private final ReviewService reviewService;
+    private final CurrentUser currentUser;
 
 
     @RequestMapping(method = RequestMethod.GET)
