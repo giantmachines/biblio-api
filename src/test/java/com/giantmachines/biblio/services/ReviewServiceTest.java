@@ -3,7 +3,6 @@ package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.model.Review;
-import com.giantmachines.biblio.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
