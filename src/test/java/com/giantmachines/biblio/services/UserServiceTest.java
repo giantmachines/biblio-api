@@ -36,7 +36,13 @@ public class UserServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     public void should_add_a_new_user(){
-        service.save(new User("John", "Smith", "jsmith@gmail.com", "1234"));
+        User newUser = User.builder()
+                .firstName("John")
+                .lastName("Smith")
+                .email("jsmith@gmail.com")
+                .password("1234")
+                .build();
+        service.save(newUser);
         Collection<User> users = (Collection) repository.findAll();
         assertEquals(2, users.size());
 

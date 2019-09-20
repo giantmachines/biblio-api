@@ -1,6 +1,8 @@
 package com.giantmachines.biblio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "book_status")
-@Getter @NoArgsConstructor
+@Getter @NoArgsConstructor @AllArgsConstructor @Builder(toBuilder = true)
 public class BookStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +26,7 @@ public class BookStatus {
     private Long lastUpdated;
     @Column(columnDefinition = "tinyint default 1")
     @JsonIgnore
+    @Builder.Default
     private boolean latest = true;
     // NOTE:  The use of latest as a flag means that we hae to set previous status records to false,
     // but I want to retrieve from the database only the latest status with each book, and so far this is
@@ -32,24 +35,6 @@ public class BookStatus {
     @PrePersist
     private void addUpdateTime(){
         this.lastUpdated = new Date().getTime();
-    }
-
-
-    public BookStatus(Status value, Book book, User user) {
-        this(value, book);
-        this.user = user;
-    }
-
-    public BookStatus(Status value, Book book) {
-        this.value = value;
-        this.book = book;
-        this.latest = true;
-    }
-
-    public BookStatus(BookStatus that){
-        this(that.value, that.book, that.user);
-        this.latest = false;
-        this.id = that.id;
     }
 }
 

@@ -1,5 +1,7 @@
 package com.giantmachines.biblio.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,6 +12,7 @@ import java.net.URI;
  */
 public class AbstractBaseController {
 
+    private static final String APP_NAME = "biblio";
 
     protected String getPath(){
         String path = this.getClass().getAnnotation(RequestMapping.class).value()[0];
@@ -31,7 +34,7 @@ public class AbstractBaseController {
      * @return A ResponseEntity
      */
     ResponseEntity buildCreatedResponse(Long id) {
-        String url = String.format("http:localhost:8080/biblio/%s/", this.getPath());
+        String url = String.format("http:localhost:8080/%s/%s/", APP_NAME, this.getPath());
         URI location = URI.create(url + id);
         return ResponseEntity.created(location).build();
     }

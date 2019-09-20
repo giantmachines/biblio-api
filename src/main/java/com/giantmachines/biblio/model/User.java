@@ -23,11 +23,4 @@ public class User {
     private String email;
     @JsonIgnore
     private String password;
-
-    public User(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
 }

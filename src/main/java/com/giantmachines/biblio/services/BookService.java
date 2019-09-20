@@ -3,7 +3,7 @@ package com.giantmachines.biblio.services;
 import com.giantmachines.biblio.dao.BookRepository;
 import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,25 +16,14 @@ import java.util.stream.Collectors;
  * Provides services for retrieving and updating books
  */
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BookService {
 
-    private BookRepository repository;
-    private AuthorService authorService;
-    private StatusService statusService;
-    private UserService userService;
-
-
-    @Autowired
-    public BookService(BookRepository repository,
-                       AuthorService authorService,
-                       StatusService statusService,
-                       UserService userService) {
-        this.repository = repository;
-        this.authorService = authorService;
-        this.statusService = statusService;
-        this.userService = userService;
-    }
+    private final BookRepository repository;
+    private final AuthorService authorService;
+    private final StatusService statusService;
+    private final UserService userService;
 
 
     public List<Book> getAll(){
@@ -69,7 +58,7 @@ public class BookService {
             this.statusService.save(status);
             book = book.toBuilder().status(status).build();
             if (currentStatus != null){
-                this.statusService.save(new BookStatus(currentStatus));
+                this.statusService.save(currentStatus.toBuilder().build());
             }
         }
 
@@ -91,11 +80,15 @@ public class BookService {
 
     @Transactional
     public Book unregister(Book book) throws PersistenceException {
-        BookStatus status = new BookStatus(Status.DEACTIVATED, book);
-        statusService.save(new BookStatus(book.getStatus()));
-        statusService.save(status);
+        BookStatus newStatus = BookStatus.builder()
+                .value(Status.DEACTIVATED)
+                .book(book)
+                .build();
+        BookStatus prevStatus = book.getStatus().toBuilder().latest(false).build();
+        statusService.save(prevStatus);
+        statusService.save(newStatus);
         Book result = book.toBuilder()
-                .status(status)
+                .status(newStatus)
                 .build();
         return this.repository.save(result);
     }
@@ -120,8 +113,13 @@ public class BookService {
         }
 
         User user =  this.userService.getById(userId);
+        BookStatus newStatus = BookStatus.builder()
+                .value(Status.UNAVAILABLE)
+                .book(current)
+                .user(user)
+                .build();
         Book result = current.toBuilder()
-                .status(new BookStatus(Status.UNAVAILABLE, current, user))
+                .status(newStatus)
                 .build();
         return this.save(result);
     }
@@ -138,8 +136,13 @@ public class BookService {
         }
 
         User user =  this.userService.getById(userId);
+        BookStatus newStatus = BookStatus.builder()
+                .value(Status.AVAILABLE)
+                .book(current)
+                .user(user)
+                .build();
         Book result = current.toBuilder()
-                .status(new BookStatus(Status.AVAILABLE, current, user))
+                .status(newStatus)
                 .build();
         return this.save(result);
     }
