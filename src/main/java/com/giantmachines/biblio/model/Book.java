@@ -21,14 +21,10 @@ public class Book {
     private String image;    // An image path or URL
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderBy("timeCreated desc")
+    @Builder.Default
     private List<Review> reviews = new ArrayList<>();
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
+    @Builder.Default
     private BookStatus status = new BookStatus();
-
-    public Book(String title, Author author, String image) {
-        this.title = title;
-        this.author = author;
-        this.image = image;
-    }
 }

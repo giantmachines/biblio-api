@@ -2,19 +2,21 @@ package com.giantmachines.biblio.security;
 
 import com.giantmachines.biblio.model.User;
 import com.giantmachines.biblio.services.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private UserService userService;
+    private final UserService userService;
 
-    public UserDetailsServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -24,6 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(s);
         }
 
+        log.info(String.format("User %s was authenticated.", s));
         return new UserPrincipal(user);
     }
 }

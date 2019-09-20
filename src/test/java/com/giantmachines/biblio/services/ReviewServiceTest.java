@@ -37,7 +37,11 @@ public class ReviewServiceTest {
     public void should_update_the_comments_for_the_specified_review(){
         String newComment = "It was OK.";
         Review review = service.getById(1L);
-        Review update = new Review(1L, review.getReviewer(), 5, newComment);
+        Review update = review.toBuilder()
+                .reviewer(review.getReviewer())
+                .value(5)
+                .comments(newComment)
+                .build();
         review = service.update(update);
         assertEquals(newComment, review.getComments());
     }
@@ -46,7 +50,7 @@ public class ReviewServiceTest {
     public void should_update_the_rating_for_the_specified_review(){
         int newRating = 4;
         Review review = service.getById(1L);
-        Review update = new Review(1L, review.getReviewer(), 4, review.getComments());
+        Review update = review.toBuilder().id(1L).value(4).build();
         review = service.update(update);
         assertEquals(newRating, review.getValue());
     }

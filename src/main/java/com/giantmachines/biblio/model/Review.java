@@ -34,17 +34,4 @@ public class Review {
         this.timeCreated = this.timeCreated == null ? new Date().getTime() : this.timeCreated;
         this.timeUpdated = new Date().getTime();
     }
-
-    public Review(User reviewer, int value, String comments) {
-        this.reviewer = reviewer;
-        this.value = value;
-        this.comments = comments;
-        this.timeCreated = new Date().getTime();
-        this.timeUpdated = new Date().getTime();
-    }
-
-    public Review(long id, User reviewer, int value, String comments) {
-        this(reviewer, value, comments);
-        this.id = id;
-    }
 }

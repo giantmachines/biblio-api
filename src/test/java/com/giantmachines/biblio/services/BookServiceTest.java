@@ -77,7 +77,10 @@ public class BookServiceTest {
     @Test
     public void should_successfully_save_a_new_book_by_an_existing_author(){
         Author author = authorRepository.findById(1L).get();
-        Book newBook = new Book("The Odyssey", author, null);
+        Book newBook = Book.builder()
+                .title("The Odyssey")
+                .author(author)
+                .build();
         newBook = service.save(newBook);
 
         List<Book> books = service.getAll();
@@ -87,7 +90,10 @@ public class BookServiceTest {
 
     @Test
     public void should_successfully_save_a_new_book_by_a_new_author(){
-        Book newBook = new Book("On Tyranny", new Author("Timothy", "Snyder"),  null);
+        Book newBook = Book.builder()
+                .title("On Tyranny")
+                .author(new Author("Timothy", "Snyder"))
+                .build();
         service.save(newBook);
 
         List<Book> books = service.getAll();
@@ -120,7 +126,11 @@ public class BookServiceTest {
     public void should_save_a_new_review(){
         String comment = "A hated it.";
         User user = this.userRepository.findById(1L).get();
-        Review review = new Review(user, 2, comment);
+        Review review = Review.builder()
+                .reviewer(user)
+                .value(2)
+                .comments(comment)
+                .build();
         Book book = service.getById(3L);
         book = service.addReview(book, review);
         review = book.getReviews().get(0);
