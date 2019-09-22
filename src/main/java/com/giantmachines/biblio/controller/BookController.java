@@ -141,9 +141,9 @@ public class BookController extends AbstractBaseController {
             this.image = book.getImage();
             if (userName != null){
                 this.highlight = false;
-                this.status = book.getStatus().getValue().toString();
-                if (book.getStatus().getUser() != null
-                        && userName.equals(book.getStatus().getUser().getEmail())) {
+                this.status = book.getStatus().toString();
+                if (book.getLastModifiedBy() != null
+                        && userName.equals(book.getLastModifiedBy().getEmail())) {
                     this.highlight = true;
                 }
             }
