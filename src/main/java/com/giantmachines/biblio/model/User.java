@@ -20,6 +20,7 @@ public class User {
     private boolean active = true;
     @Column(columnDefinition = "tinyint default 0")
     private boolean online = false;
+    @Column(unique = true)
     private String email;
     @JsonIgnore
     private String password;
