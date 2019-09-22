@@ -1,7 +1,6 @@
 package com.giantmachines.biblio.dao;
 
 import com.giantmachines.biblio.model.Review;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
