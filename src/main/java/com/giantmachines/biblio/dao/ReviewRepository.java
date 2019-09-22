@@ -9,6 +9,5 @@ import java.util.List;
 
 public interface ReviewRepository extends CrudRepository<Review, Long> {
 
-    @Query(value = "from Review r where r.reviewer.id = :userId")
-    List<Review> getByUserId(@Param("userId") long userId);
+    List<Review> getByReviewerId(@Param("userId") long userId);
 }

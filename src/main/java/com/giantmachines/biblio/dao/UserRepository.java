@@ -7,6 +7,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query(value = "from User u where u.email = :userId")
-    User findByUserName(@Param("userId") String userName);
+    User findByEmail(@Param("userId") String email);
 }
