@@ -18,4 +18,5 @@ insert into book_status(id, value, user_id, book_id, last_updated) values(4, 1, 
 insert into book_status(id, value, user_id, book_id, last_updated) values(5, 4, null, 5, 1565710659);
 
 insert into review(id, value, reviewer_id, comments, time_created,last_updated) values(1, 5, 1, 'I liked it.', 1565815231, 1565815231);
-insert into book_reviews (book_id, reviews_id) values(1, 1);
+/*insert into book_reviews (book_id, reviews_id) values(1, 1);*/
+update review set book_id = 1 where id = 1;

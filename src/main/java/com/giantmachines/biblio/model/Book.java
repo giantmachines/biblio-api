@@ -20,6 +20,7 @@ public class Book {
     private Author author;
     private String image;    // An image path or URL
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "book_id")
     @OrderBy("timeCreated desc")
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
