@@ -104,7 +104,7 @@ public class BookServiceTest {
     public void should_successfully_unregister_a_specified_book(){
         Book book = service.getById(3L);
         book = service.unregister(book);
-        assertEquals("DEACTIVATED", book.getStatus().getValue().toString());
+        assertEquals("DEACTIVATED", book.getStatus().toString());
 
         List<Book> books = service.getActiveOnly();
         assertEquals(3, books.size());
@@ -156,7 +156,7 @@ public class BookServiceTest {
     public void should_checkout_available_boos() throws Exception{
         Book book = service.getById(3L);
         book = service.checkout(book, 1L);
-        assertEquals(Status.UNAVAILABLE, book.getStatus().getValue());
+        assertEquals(Status.UNAVAILABLE, book.getStatus());
     }
 
     @Test
@@ -173,12 +173,13 @@ public class BookServiceTest {
     }
 
     @Test
+    @Sql({"classpath:tests.sql"})
     @DirtiesContext
     public void should_checkin_books_that_are_checked_out(){
         try {
             Book book = service.getById(1L);
             book = service.checkin(book, 1L);
-            assertEquals(Status.AVAILABLE, book.getStatus().getValue());
+            assertEquals(Status.AVAILABLE, book.getStatus());
         } catch (Exception e){
             fail("An exception should not be thrown.");
         }
