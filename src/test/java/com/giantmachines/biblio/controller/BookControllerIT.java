@@ -191,7 +191,6 @@ public class BookControllerIT {
     }
 
     @Test
-    //@Sql({"classpath:tests.sql"})
     @DirtiesContext
     public void should_check_in_a_specified_book() throws Exception{
         mvc.perform(MockMvcRequestBuilders.put("/books/1/checkin")
