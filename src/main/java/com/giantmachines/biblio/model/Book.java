@@ -36,8 +36,8 @@ public class Book {
     @Column(name = "time_created", nullable = false, updatable = false)
     @CreatedDate
     private long timeCreated;
-    @OneToOne(fetch = FetchType.LAZY)
-    @LastModifiedBy
+    @OneToOne(fetch = FetchType.EAGER)
+    //@LastModifiedBy
     private User lastModifiedBy;
     @Column(name = "last_updated", nullable = false)
     @LastModifiedDate

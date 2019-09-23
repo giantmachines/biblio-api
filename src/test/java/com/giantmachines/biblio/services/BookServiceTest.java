@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -135,8 +136,8 @@ public class BookServiceTest {
         book = service.addReview(book, review);
         review = book.getReviews().get(0);
         assertNotNull(review.getReviewer());
-        assertNotEquals(0, (long) review.getTimeCreated());
-        assertNotEquals(0, (long) review.getTimeUpdated());
+        assertNotEquals(0, review.getTimeCreated());
+        assertNotEquals(0, review.getTimeUpdated());
         assertEquals(comment, review.getComments());
     }
 
@@ -152,11 +153,16 @@ public class BookServiceTest {
     }
 
     @Test
+    @Sql({"classpath:tests.sql"})
     @DirtiesContext
-    public void should_checkout_available_boos() throws Exception{
-        Book book = service.getById(3L);
-        book = service.checkout(book, 1L);
-        assertEquals(Status.UNAVAILABLE, book.getStatus());
+    public void should_checkout_available_books() throws Exception{
+        try {
+            Book book = service.getById(4L);
+            book = service.checkout(book);
+            assertEquals(Status.UNAVAILABLE, book.getStatus());
+        } catch(BookUnavailableException e){
+            fail("A BookUnavailableException should not have been thrown.");
+        }
     }
 
     @Test
@@ -165,7 +171,7 @@ public class BookServiceTest {
     public void should_not_allow_checkout_unless_the_book_is_available(){
         Book book = service.getById(1L);
         try {
-            service.checkout(book, 2L);
+            service.checkout(book);
             fail("We should not reach this point.");
         } catch (Exception e){
             assertTrue(e instanceof BookUnavailableException);
@@ -174,11 +180,12 @@ public class BookServiceTest {
 
     @Test
     @Sql({"classpath:tests.sql"})
+    @WithMockUser("paford@gmail.com")
     @DirtiesContext
     public void should_checkin_books_that_are_checked_out(){
         try {
-            Book book = service.getById(1L);
-            book = service.checkin(book, 1L);
+            Book book = service.getById(2L);
+            book = service.checkin(book);
             assertEquals(Status.AVAILABLE, book.getStatus());
         } catch (Exception e){
             fail("An exception should not be thrown.");
@@ -191,7 +198,7 @@ public class BookServiceTest {
     public void should_not_checkin_books_that_are_checked_out_by_others(){
         try {
             Book book = service.getById(1L);
-            book = service.checkin(book, 2L);
+            service.checkin(book);
             fail("We should not reach this point.");
         } catch (Exception e){
             assertTrue(e instanceof IllegalAccessException);

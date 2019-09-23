@@ -101,7 +101,7 @@ public class BookController extends AbstractBaseController {
     @RequestMapping(value = "/{bookId}/checkout", method = RequestMethod.PUT)
     public ResponseEntity checkout(@PathVariable("bookId") long bookId) throws Exception{
         Book book = this.service.getById(bookId);
-        book = this.service.checkout(book, currentUser.getUserId());
+        book = this.service.checkout(book);
         return this.buildOkResponse(new BookDetailsDto(book));
     }
 
@@ -110,7 +110,7 @@ public class BookController extends AbstractBaseController {
     public ResponseEntity checkin(@PathVariable("bookId") long bookId) {
         Book book = this.service.getById(bookId);
         try {
-            book = this.service.checkin(book, currentUser.getUserId());
+            book = this.service.checkin(book);
         } catch (Exception e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         }
