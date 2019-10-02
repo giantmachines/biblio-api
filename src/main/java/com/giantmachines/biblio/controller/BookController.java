@@ -1,14 +1,13 @@
 package com.giantmachines.biblio.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.giantmachines.biblio.model.Author;
-import com.giantmachines.biblio.model.Book;
-import com.giantmachines.biblio.model.Review;
+import com.giantmachines.biblio.model.*;
 import com.giantmachines.biblio.security.CurrentUser;
 import com.giantmachines.biblio.services.BookService;
 import com.giantmachines.biblio.services.ReviewService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +26,7 @@ public class BookController extends AbstractBaseController {
     private final String path = "books";
     private final BookService service;
     private final ReviewService reviewService;
-    private final CurrentUser currentUser;
+    private final AuditorAware<User> auditor;
 
 
     @RequestMapping(method = RequestMethod.GET)
@@ -134,7 +133,7 @@ public class BookController extends AbstractBaseController {
         private Boolean highlight = null;
 
         BookDto(final Book book) {
-            String userName = BookController.this.currentUser.get();
+            String userName = BookController.this.auditor.getCurrentAuditor().get().getEmail();
             this.id = book.getId();
             this.title = book.getTitle();
             this.author = book.getAuthor();
@@ -142,7 +141,8 @@ public class BookController extends AbstractBaseController {
             if (userName != null){
                 this.highlight = false;
                 this.status = book.getStatus().toString();
-                if (book.getLastModifiedBy() != null
+                if (book.getStatus().equals(Status.UNAVAILABLE)
+                        && book.getLastModifiedBy() != null
                         && userName.equals(book.getLastModifiedBy().getEmail())) {
                     this.highlight = true;
                 }

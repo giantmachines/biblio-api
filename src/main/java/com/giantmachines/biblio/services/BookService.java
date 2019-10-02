@@ -3,7 +3,6 @@ package com.giantmachines.biblio.services;
 import com.giantmachines.biblio.dao.BookRepository;
 import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
-import com.giantmachines.biblio.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,7 @@ public class BookService {
 
     private final BookRepository repository;
     private final AuthorService authorService;
-    private final UserService userService;
-    private final CurrentUser currentUser;
+    private final AuditorAware<User> auditor;
 
 
     public List<Book> getAll(){
@@ -96,7 +94,7 @@ public class BookService {
             throw new BookUnavailableException(book);
         }
 
-        User user =  this.userService.getById(currentUser.getUserId());
+        User user = auditor.getCurrentAuditor().get();
         Book result = current.toBuilder()
                 .status(Status.UNAVAILABLE)
                 .lastModifiedBy(user)
@@ -111,14 +109,12 @@ public class BookService {
         if (current.getStatus().equals(Status.AVAILABLE)){
             throw new IllegalStateException("Attempt to checkin a book that was not checked out.");
         }
-        if (current.getLastModifiedBy().getId() != currentUser.getUserId()){
+        if (current.getLastModifiedBy().getId() != auditor.getCurrentAuditor().get().getId()){
             throw new IllegalAccessException("Attempt to checkin a book that was checked out by another user.");
         }
 
-        User user =  this.userService.getById(currentUser.getUserId());
         Book result = current.toBuilder()
                 .status(Status.AVAILABLE)
-                .lastModifiedBy(user)
                 .build();
         return this.save(result);
     }

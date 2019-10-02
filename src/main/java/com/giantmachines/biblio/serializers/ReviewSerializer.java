@@ -4,20 +4,20 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.giantmachines.biblio.model.Review;
-import com.giantmachines.biblio.security.CurrentUser;
+import com.giantmachines.biblio.model.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.AuditorAware;
 
 import java.io.IOException;
 
+@RequiredArgsConstructor
 public class ReviewSerializer extends JsonSerializer<Review> {
-    private CurrentUser currentUser;
-
-    public ReviewSerializer(CurrentUser currentUser) {
-        this.currentUser = currentUser;
-    }
+    private final AuditorAware<User> auditor;
 
     @Override
     public void serialize(Review review, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        String userName = currentUser.get();
+        User currentUser = auditor.getCurrentAuditor().get();
+        String userName = currentUser.getEmail();
         String reviewer = String.format("%s %s", review.getReviewer().getFirstName(), review.getReviewer().getLastName());
         gen.writeStartObject();
         gen.writeNumberField("id", review.getId());
@@ -26,7 +26,7 @@ public class ReviewSerializer extends JsonSerializer<Review> {
         gen.writeStringField("comments", review.getComments());
         gen.writeNumberField("createdAt", review.getTimeCreated());  // TODO:  handle client timezone
         gen.writeNumberField("updatedAt", review.getTimeUpdated());
-        if (userName != null && review.getReviewer().getEmail().equals(currentUser.get())) {
+        if (userName != null && review.getReviewer().getEmail().equals(currentUser.getEmail())) {
             gen.writeBooleanField("highlight", true);
         }
         gen.writeEndObject();

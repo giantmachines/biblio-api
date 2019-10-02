@@ -86,17 +86,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return  passwordEncoder;
     }
 
-
-    /**
-     * Allows components to access information about the current user from the Spring Security context.
-     * @return The current user, from which components can get the user name when needed.
-     */
-    @Bean
-    public CurrentUser currentUser(){
-        return new CurrentUser();
-    }
-
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
