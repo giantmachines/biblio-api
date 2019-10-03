@@ -1,7 +1,6 @@
 package com.giantmachines.biblio.configuration;
 
 
-import com.giantmachines.biblio.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
