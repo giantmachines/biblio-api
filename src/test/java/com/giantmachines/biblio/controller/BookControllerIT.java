@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -34,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Sql({"classpath:reset.sql"})
+@WithMockUser("paford@gmail.com")
 public class BookControllerIT {
 
     private MockMvc mvc;
@@ -166,7 +168,6 @@ public class BookControllerIT {
 
 
     @Test
-    @Sql({"classpath:tests.sql"})
     @DirtiesContext
     public void should_checkout_a_specified_book() throws Exception{
         mvc.perform(MockMvcRequestBuilders.put("/books/2/checkout")
@@ -189,7 +190,6 @@ public class BookControllerIT {
     }
 
     @Test
-    @Sql({"classpath:tests.sql"})
     @DirtiesContext
     public void should_check_in_a_specified_book() throws Exception{
         mvc.perform(MockMvcRequestBuilders.put("/books/1/checkin")

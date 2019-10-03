@@ -4,6 +4,7 @@ import com.giantmachines.biblio.dao.BookRepository;
 import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,7 @@ public class BookService {
 
     private final BookRepository repository;
     private final AuthorService authorService;
-    private final UserService userService;
+    private final AuditorAware<User> auditor;
 
 
     public List<Book> getAll(){
@@ -87,35 +88,31 @@ public class BookService {
     }
 
     @Transactional
-    public Book checkout(Book book, long userId) throws BookUnavailableException, PersistenceException{
+    public Book checkout(Book book) throws BookUnavailableException, PersistenceException{
         Book current = this.getById(book.getId());
         if (!current.getStatus().equals(Status.AVAILABLE)){
             throw new BookUnavailableException(book);
         }
 
-        User user =  this.userService.getById(userId);
         Book result = current.toBuilder()
                 .status(Status.UNAVAILABLE)
-                .lastModifiedBy(user)
                 .build();
         return this.save(result);
     }
 
 
     @Transactional
-    public Book checkin(Book book, long userId) throws IllegalStateException, IllegalAccessException{
+    public Book checkin(Book book) throws IllegalStateException, IllegalAccessException{
         Book current = this.getById(book.getId());
         if (current.getStatus().equals(Status.AVAILABLE)){
             throw new IllegalStateException("Attempt to checkin a book that was not checked out.");
         }
-        if (book.getLastModifiedBy().getId() != userId){
+        if (current.getLastModifiedBy().getId() != auditor.getCurrentAuditor().get().getId()){
             throw new IllegalAccessException("Attempt to checkin a book that was checked out by another user.");
         }
 
-        User user =  this.userService.getById(userId);
         Book result = current.toBuilder()
                 .status(Status.AVAILABLE)
-                .lastModifiedBy(user)
                 .build();
         return this.save(result);
     }

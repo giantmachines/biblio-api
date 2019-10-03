@@ -12,7 +12,7 @@ import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
- * Provides services for retrieving and updating userrs
+ * Provides services for retrieving and updating users
  */
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public User getByUserName(String userId){
-        return this.repository.findByUserName(userId);
+        return this.repository.findByEmail(userId);
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class UserService {
         return this.repository.save(user.toBuilder().active(false).build());
     }
 
-    public List<Review> getUserReviews(long id){
-        return this.reviewRepository.getByUserId(id);
+    public List<Review> getUserReviews(long userId){
+        return this.reviewRepository.getByReviewerId(userId);
     }
 }

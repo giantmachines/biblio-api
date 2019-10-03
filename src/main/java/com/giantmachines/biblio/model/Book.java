@@ -1,19 +1,20 @@
 package com.giantmachines.biblio.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mysql.cj.protocol.ColumnDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter @NoArgsConstructor @AllArgsConstructor @Builder(toBuilder = true)
 public class Book {
     @Id
@@ -32,8 +33,13 @@ public class Book {
     @Column(columnDefinition = "varchar(12) default 'AVAILABLE'")
     @Builder.Default
     private Status status = Status.AVAILABLE;
-    @OneToOne(fetch = FetchType.LAZY)
+    @Column(name = "time_created", nullable = false, updatable = false)
+    @CreatedDate
+    private long timeCreated;
+    @OneToOne(fetch = FetchType.EAGER)
+    @LastModifiedBy
     private User lastModifiedBy;
+    @Column(name = "last_updated", nullable = false)
     @LastModifiedDate
-    private Long lastModifiedAt;
+    private long timeUpdated;
 }

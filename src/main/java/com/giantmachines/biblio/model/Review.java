@@ -6,12 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import java.util.Date;
+
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @JsonSerialize(using = ReviewSerializer.class)
 @Getter @NoArgsConstructor @AllArgsConstructor @Builder(toBuilder = true)
 public class Review {
@@ -25,13 +29,10 @@ public class Review {
     private int value;
     @NonNull
     private String comments;
-    private Long timeCreated;
-    @Column(name = "last_updated")
-    private Long timeUpdated;
-
-    @PrePersist
-    private void setTimeCreated(){
-        this.timeCreated = this.timeCreated == null ? new Date().getTime() : this.timeCreated;
-        this.timeUpdated = new Date().getTime();
-    }
+    @Column(name = "time_created", nullable = false, updatable = false)
+    @CreatedDate
+    private long timeCreated;
+    @Column(name = "last_updated", nullable = false)
+    @LastModifiedDate
+    private long timeUpdated;
 }
