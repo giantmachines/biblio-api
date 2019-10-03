@@ -94,10 +94,8 @@ public class BookService {
             throw new BookUnavailableException(book);
         }
 
-        User user = auditor.getCurrentAuditor().get();
         Book result = current.toBuilder()
                 .status(Status.UNAVAILABLE)
-                .lastModifiedBy(user)
                 .build();
         return this.save(result);
     }

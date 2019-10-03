@@ -2,7 +2,6 @@ package com.giantmachines.biblio.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.giantmachines.biblio.model.*;
-import com.giantmachines.biblio.security.CurrentUser;
 import com.giantmachines.biblio.services.BookService;
 import com.giantmachines.biblio.services.ReviewService;
 import lombok.Getter;
@@ -133,7 +132,10 @@ public class BookController extends AbstractBaseController {
         private Boolean highlight = null;
 
         BookDto(final Book book) {
-            String userName = BookController.this.auditor.getCurrentAuditor().get().getEmail();
+            String userName = BookController.this.auditor
+                    .getCurrentAuditor()
+                    .get()
+                    .getEmail();
             this.id = book.getId();
             this.title = book.getTitle();
             this.author = book.getAuthor();
