@@ -3,6 +3,7 @@ package com.giantmachines.biblio.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.dao.UserRepository;
+import com.giantmachines.biblio.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,7 +112,7 @@ public class BookControllerIT {
     @Test
     public void should_save_a_new_review() throws Exception{
         Map<String, Object> values = new HashMap<>();
-        values.put("reviewer", userRepository.findById(1L).get());
+        values.put("reviewer", User.builder().id(1L).build());
         values.put("comments", "Booooring.");
         values.put("value", "1");
         String json = new ObjectMapper().writeValueAsString(values);
