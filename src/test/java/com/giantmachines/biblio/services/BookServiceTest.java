@@ -91,9 +91,13 @@ public class BookServiceTest {
 
     @Test
     public void should_successfully_save_a_new_book_by_a_new_author(){
+        Author author = Author.builder()
+                .firstName("Timothy")
+                .lastName("Snyder")
+                .build();
         Book newBook = Book.builder()
                 .title("On Tyranny")
-                .author(new Author("Timothy", "Snyder"))
+                .author(author)
                 .build();
         service.save(newBook);
 
