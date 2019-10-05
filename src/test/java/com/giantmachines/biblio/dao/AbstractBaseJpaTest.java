@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "spring.datasource.initialization-mode=never"
 })
-public class AbstractBaseJpaTest {
+public abstract class AbstractBaseJpaTest {
 
     private static boolean initialized = false;
 
