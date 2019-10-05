@@ -2,14 +2,14 @@ package com.giantmachines.biblio.testing;
 
 import com.giantmachines.biblio.model.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Fixtures {
     public static List<User> users = new ArrayList<>();
-
     static {
         users.add(User.builder()
-                .id(1L)
                 .firstName("Philip")
                 .lastName("Ford")
                 .active(true)
@@ -20,34 +20,27 @@ public class Fixtures {
     }
 
     public static List<Author> authors = new ArrayList<>();
-
     static {
         authors.add(Author.builder()
-                .id(1L)
                 .firstName("Homer")
                 .build());
         authors.add(Author.builder()
-                .id(2L)
                 .firstName("Martin")
                 .lastName("Fowler")
                 .build());
         authors.add(Author.builder()
-                .id(3L)
                 .firstName("Eric")
                 .lastName("Gamma")
                 .build());
         authors.add(Author.builder()
-                .id(4L)
                 .firstName("Harold")
                 .lastName("Camping")
                 .build());
     }
 
     public static List<Review> reviews = new ArrayList<>();
-
     static {
         reviews.add(Review.builder()
-                .id(1L)
                 .value(5)
                 .reviewer(users.get(0))
                 .comments("I liked it.")
@@ -55,10 +48,8 @@ public class Fixtures {
     }
 
     public static List<Book> books = new ArrayList<>();
-
     static {
         books.add(Book.builder()
-                .id(1L)
                 .title("The Iliad")
                 .author(authors.get(0))
                 .image("http://localhost/biblio/books/images/1")
@@ -66,28 +57,21 @@ public class Fixtures {
                 .reviews(Collections.singletonList(reviews.get(0)))
                 .build());
         books.add(Book.builder()
-                .id(2L)
                 .title("Patterns of Enterprise Software")
                 .author(authors.get(1))
                 .image("http://localhost/biblio/books/images/2")
-                .status(Status.AVAILABLE)
                 .build());
         books.add(Book.builder()
-                .id(3L)
                 .title("Refactoring")
                 .author(authors.get(1))
                 .image("http://localhost/biblio/books/images/3")
-                .status(Status.AVAILABLE)
                 .build());
         books.add(Book.builder()
-                .id(4L)
                 .title("Design Patterns")
                 .author(authors.get(2))
                 .image("http://localhost/biblio/books/images/4")
-                .status(Status.AVAILABLE)
                 .build());
         books.add(Book.builder()
-                .id(5L)
                 .title("!994")
                 .author(authors.get(3))
                 .image("http://localhost/biblio/books/images/5")
