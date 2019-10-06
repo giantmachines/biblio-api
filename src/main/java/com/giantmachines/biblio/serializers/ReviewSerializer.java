@@ -6,12 +6,13 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.giantmachines.biblio.model.Review;
 import com.giantmachines.biblio.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
+@JsonComponent
 @RequiredArgsConstructor
 public class ReviewSerializer extends JsonSerializer<Review> {
 

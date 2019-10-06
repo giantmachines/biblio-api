@@ -2,7 +2,6 @@ package com.giantmachines.biblio.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.giantmachines.biblio.Application;
-import com.giantmachines.biblio.dao.UserRepository;
 import com.giantmachines.biblio.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,9 +23,10 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@Sql({"classpath:reset.sql"})
 @WithMockUser("paford@gmail.com")
 public class BookControllerIT {
 
@@ -44,13 +43,13 @@ public class BookControllerIT {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private UserRepository userRepository;
-
 
     @Before
-    public void setUp() throws Exception {
-        mvc = MockMvcBuilders.webAppContextSetup(context).build();
+    public void setUp() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                //.apply(springSecurity())
+                .build();
     }
 
     @Test

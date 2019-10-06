@@ -1,23 +1,15 @@
 package com.giantmachines.biblio.services;
 
 
-import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.model.Review;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.annotation.DirtiesContext;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
-@ActiveProfiles("test")
-@Sql({"classpath:reset.sql"})
-public class ReviewServiceTest {
+
+public class ReviewServiceTest extends AbstractBaseServiceTest {
 
     @Autowired
     ReviewService service;
@@ -33,6 +25,7 @@ public class ReviewServiceTest {
     }
 
     @Test
+    @DirtiesContext
     public void should_update_the_comments_for_the_specified_review(){
         String newComment = "It was OK.";
         Review review = service.getById(1L);
@@ -46,6 +39,7 @@ public class ReviewServiceTest {
     }
 
     @Test
+    @DirtiesContext
     public void should_update_the_rating_for_the_specified_review(){
         int newRating = 4;
         Review review = service.getById(1L);

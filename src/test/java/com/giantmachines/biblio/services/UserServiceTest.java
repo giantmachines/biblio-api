@@ -3,22 +3,15 @@ package com.giantmachines.biblio.services;
 import com.giantmachines.biblio.dao.UserRepository;
 import com.giantmachines.biblio.model.User;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Collection;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
-@Sql({"classpath:reset.sql"})
-public class UserServiceTest {
+
+public class UserServiceTest extends AbstractBaseServiceTest {
 
     @Autowired
     UserService service;
@@ -26,8 +19,10 @@ public class UserServiceTest {
     @Autowired
     UserRepository repository;
 
+
+
     @Test
-    public void should_return_a_specified_user_by_id(){
+    public void should_return_a_specified_user_by_id() {
         User user = service.getById(1L);
         assertEquals("Philip", user.getFirstName());
         assertEquals("Ford", user.getLastName());
@@ -35,7 +30,8 @@ public class UserServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void should_add_a_new_user(){
+    @DirtiesContext
+    public void should_add_a_new_user() {
         User newUser = User.builder()
                 .firstName("John")
                 .lastName("Smith")
@@ -52,7 +48,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void should_update_a_specified_user(){
+    @DirtiesContext
+    public void should_update_a_specified_user() {
         User user = repository.findById(1L).get();
         assertTrue(user.isOnline()); // A control
         user = service.setStatus(user, false);
@@ -60,7 +57,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void should_deactivate_a_specified_user_account(){
+    @DirtiesContext
+    public void should_deactivate_a_specified_user_account() {
         User user = repository.findById(1L).get();
         assertTrue(user.isActive());  // A control
         user = service.deactivate(user);

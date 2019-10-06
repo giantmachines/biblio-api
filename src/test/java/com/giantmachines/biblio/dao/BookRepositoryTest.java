@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.*;
 
-public class BookRepositoryIT extends AbstractBaseJpaTest{
+/**
+ * Uses an in-memory database and tests the interaction with the
+ * Book model as well.
+ */
+public class BookRepositoryTest extends AbstractBaseJpaTest{
 
     @Autowired
     private BookRepository repository;
