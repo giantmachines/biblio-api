@@ -18,6 +18,7 @@ public class BookRepositoryTest extends AbstractBaseJpaTest{
     private BookRepository repository;
 
 
+
     @Test
     public void any_new_book_should_be_available_and_should_have_a_time_created_and_a_time_updated() {
         Author author = this.getEntityManager().find(Author.class, 1L);
@@ -27,6 +28,7 @@ public class BookRepositoryTest extends AbstractBaseJpaTest{
         assertTrue(book.getTimeUpdated() != 0);
     }
 
+
     @Test
     public void all_books_should_have_a_status_and_a_time_created_and_a_time_updated() {
         Iterable<Book> books = this.repository.findAll();
@@ -34,6 +36,7 @@ public class BookRepositoryTest extends AbstractBaseJpaTest{
             assertNotNull(book.getStatus());
         }
     }
+
 
     @Test
     public void updates_should_set_the_time_updated() {

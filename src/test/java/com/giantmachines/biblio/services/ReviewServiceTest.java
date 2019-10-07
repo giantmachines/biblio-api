@@ -17,12 +17,15 @@ public class ReviewServiceTest extends AbstractBaseServiceTest {
     @Autowired
     UserService userService;
 
+
+
     @Test
     public void should_return_the_specified_review(){
         Review review = service.getById(1L);
         assertEquals(review.getValue(), 5);
         assertEquals(review.getReviewer().getEmail(), "paford@gmail.com");
     }
+
 
     @Test
     @DirtiesContext
@@ -38,6 +41,7 @@ public class ReviewServiceTest extends AbstractBaseServiceTest {
         assertEquals(newComment, review.getComments());
     }
 
+
     @Test
     @DirtiesContext
     public void should_update_the_rating_for_the_specified_review(){
@@ -47,5 +51,4 @@ public class ReviewServiceTest extends AbstractBaseServiceTest {
         review = service.update(update);
         assertEquals(newRating, review.getValue());
     }
-
 }

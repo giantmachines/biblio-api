@@ -134,7 +134,7 @@ public class BookController extends AbstractBaseController {
         BookDto(final Book book) {
             String userName = BookController.this.auditService
                     .getCurrentAuditor()
-                    .get()
+                    .orElse(new User())
                     .getEmail();
             this.id = book.getId();
             this.title = book.getTitle();

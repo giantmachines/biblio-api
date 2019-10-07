@@ -2,6 +2,8 @@ package com.giantmachines.biblio.configuration;
 
 import com.giantmachines.biblio.model.User;
 import com.giantmachines.biblio.security.AuditorAwareImpl;
+import com.giantmachines.biblio.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

@@ -28,6 +28,7 @@ public class UserServiceTest extends AbstractBaseServiceTest {
         assertEquals("Ford", user.getLastName());
     }
 
+
     @Test
     @SuppressWarnings("unchecked")
     @DirtiesContext
@@ -47,6 +48,7 @@ public class UserServiceTest extends AbstractBaseServiceTest {
         assertEquals("John", user.getFirstName());
     }
 
+
     @Test
     @DirtiesContext
     public void should_update_a_specified_user() {
@@ -55,6 +57,7 @@ public class UserServiceTest extends AbstractBaseServiceTest {
         user = service.setStatus(user, false);
         assertFalse(user.isOnline());
     }
+
 
     @Test
     @DirtiesContext

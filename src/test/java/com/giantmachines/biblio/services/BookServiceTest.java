@@ -33,6 +33,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
     UserRepository userRepository;
 
 
+
     @Test
     public void should_return_the_correct_book_for_the_requested_id(){
         Book book = service.getById(1);
@@ -41,6 +42,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         book = service.getById(3);
         assertEquals("Refactoring", book.getTitle());
     }
+
 
     @Test
     public void should_return_all_books(){
@@ -54,6 +56,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         assertFalse(titles.contains("ABCD"));
         assertTrue(titles.contains("1994"));
     }
+
 
     @Test
     public void should_return_all_active_books(){
@@ -83,6 +86,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         assertNotNull(newBook.getStatus());
     }
 
+
     @Test
     @DirtiesContext
     public void should_successfully_save_a_new_book_by_a_new_author(){
@@ -100,6 +104,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         assertEquals(6, books.size());
     }
 
+
     @Test
     @DirtiesContext
     public void should_successfully_unregister_a_specified_book(){
@@ -114,6 +119,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         assertFalse(titles.contains("Refactoring"));
     }
 
+
     @Test
     public void should_return_checkout_status(){
         List<Book> books = this.service.getAll();
@@ -121,6 +127,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
             assertNotNull(book.getStatus());
         }
     }
+
 
     @Test
     @DirtiesContext
@@ -152,6 +159,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         assertFalse(service.hasReviews(3L));
     }
 
+
     @Test
     @Sql({"classpath:tests.sql"})
     @DirtiesContext
@@ -165,6 +173,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         }
     }
 
+
     @Test(expected = BookUnavailableException.class)
     @Sql({"classpath:tests.sql"})
     @DirtiesContext
@@ -172,6 +181,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
         Book book = service.getById(1L);
         service.checkout(book);
     }
+
 
     @Test
     @Sql({"classpath:tests.sql"})
@@ -186,6 +196,7 @@ public class BookServiceTest extends AbstractBaseServiceTest{
             fail("An exception should not be thrown.");
         }
     }
+
 
     @Test(expected = IllegalAccessException.class)
     @Sql({"classpath:tests.sql"})

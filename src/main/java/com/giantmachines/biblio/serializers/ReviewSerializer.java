@@ -8,7 +8,6 @@ import com.giantmachines.biblio.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -20,7 +19,7 @@ public class ReviewSerializer extends JsonSerializer<Review> {
 
     @Override
     public void serialize(Review review, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        User currentUser = auditService.getCurrentAuditor().get();
+        User currentUser = auditService.getCurrentAuditor().orElse(new User());
         String userName = currentUser.getEmail();
         String reviewer = String.format("%s %s", review.getReviewer().getFirstName(), review.getReviewer().getLastName());
         gen.writeStartObject();
