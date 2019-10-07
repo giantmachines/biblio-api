@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class Book {
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
     @Enumerated(EnumType.STRING)
+    @NotNull
     @Column(columnDefinition = "varchar(12) default 'AVAILABLE'")
     @Builder.Default
     private Status status = Status.AVAILABLE;

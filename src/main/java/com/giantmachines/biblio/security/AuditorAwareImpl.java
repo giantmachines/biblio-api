@@ -11,15 +11,15 @@ import java.util.Optional;
 
 public class AuditorAwareImpl implements AuditorAware<User> {
 
-    @Autowired
-    private UserService userService;
-
     @Override
     public Optional<User> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getName().equals("anonymous")
+                || authentication.getName().equals("anonymousUser")) {
+            return Optional.empty();
         }
 
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();

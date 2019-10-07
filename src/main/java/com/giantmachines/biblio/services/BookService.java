@@ -23,7 +23,7 @@ public class BookService {
 
     private final BookRepository repository;
     private final AuthorService authorService;
-    private final AuditorAware<User> auditor;
+    private final AuditorAware<User> auditService;
 
 
     public List<Book> getAll(){
@@ -107,7 +107,7 @@ public class BookService {
         if (current.getStatus().equals(Status.AVAILABLE)){
             throw new IllegalStateException("Attempt to checkin a book that was not checked out.");
         }
-        if (current.getLastModifiedBy().getId() != auditor.getCurrentAuditor().get().getId()){
+        if (current.getLastModifiedBy().getId() != auditService.getCurrentAuditor().get().getId()){
             throw new IllegalAccessException("Attempt to checkin a book that was checked out by another user.");
         }
 

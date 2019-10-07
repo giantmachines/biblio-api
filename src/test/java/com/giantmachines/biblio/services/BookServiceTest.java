@@ -1,31 +1,24 @@
 package com.giantmachines.biblio.services;
 
-import com.giantmachines.biblio.Application;
 import com.giantmachines.biblio.dao.AuthorRepository;
 import com.giantmachines.biblio.dao.ReviewRepository;
 import com.giantmachines.biblio.dao.UserRepository;
 import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
-@ActiveProfiles("test")
-@Sql({"classpath:reset.sql"})
-public class BookServiceTest {
+
+
+public class BookServiceTest extends AbstractBaseServiceTest{
 
     @Autowired
     BookService service;
@@ -40,6 +33,7 @@ public class BookServiceTest {
     UserRepository userRepository;
 
 
+
     @Test
     public void should_return_the_correct_book_for_the_requested_id(){
         Book book = service.getById(1);
@@ -48,6 +42,7 @@ public class BookServiceTest {
         book = service.getById(3);
         assertEquals("Refactoring", book.getTitle());
     }
+
 
     @Test
     public void should_return_all_books(){
@@ -61,6 +56,7 @@ public class BookServiceTest {
         assertFalse(titles.contains("ABCD"));
         assertTrue(titles.contains("1994"));
     }
+
 
     @Test
     public void should_return_all_active_books(){
@@ -76,6 +72,7 @@ public class BookServiceTest {
 
 
     @Test
+    @DirtiesContext
     public void should_successfully_save_a_new_book_by_an_existing_author(){
         Author author = authorRepository.findById(1L).get();
         Book newBook = Book.builder()
@@ -89,11 +86,17 @@ public class BookServiceTest {
         assertNotNull(newBook.getStatus());
     }
 
+
     @Test
+    @DirtiesContext
     public void should_successfully_save_a_new_book_by_a_new_author(){
+        Author author = Author.builder()
+                .firstName("Timothy")
+                .lastName("Snyder")
+                .build();
         Book newBook = Book.builder()
                 .title("On Tyranny")
-                .author(new Author("Timothy", "Snyder"))
+                .author(author)
                 .build();
         service.save(newBook);
 
@@ -101,7 +104,9 @@ public class BookServiceTest {
         assertEquals(6, books.size());
     }
 
+
     @Test
+    @DirtiesContext
     public void should_successfully_unregister_a_specified_book(){
         Book book = service.getById(3L);
         book = service.unregister(book);
@@ -114,6 +119,7 @@ public class BookServiceTest {
         assertFalse(titles.contains("Refactoring"));
     }
 
+
     @Test
     public void should_return_checkout_status(){
         List<Book> books = this.service.getAll();
@@ -121,6 +127,7 @@ public class BookServiceTest {
             assertNotNull(book.getStatus());
         }
     }
+
 
     @Test
     @DirtiesContext
@@ -152,6 +159,7 @@ public class BookServiceTest {
         assertFalse(service.hasReviews(3L));
     }
 
+
     @Test
     @Sql({"classpath:tests.sql"})
     @DirtiesContext
@@ -165,18 +173,15 @@ public class BookServiceTest {
         }
     }
 
-    @Test
+
+    @Test(expected = BookUnavailableException.class)
     @Sql({"classpath:tests.sql"})
     @DirtiesContext
-    public void should_not_allow_checkout_unless_the_book_is_available(){
+    public void should_not_allow_checkout_unless_the_book_is_available() throws Exception {
         Book book = service.getById(1L);
-        try {
-            service.checkout(book);
-            fail("We should not reach this point.");
-        } catch (Exception e){
-            assertTrue(e instanceof BookUnavailableException);
-        }
+        service.checkout(book);
     }
+
 
     @Test
     @Sql({"classpath:tests.sql"})
@@ -192,16 +197,12 @@ public class BookServiceTest {
         }
     }
 
-    @Test
+
+    @Test(expected = IllegalAccessException.class)
     @Sql({"classpath:tests.sql"})
     @DirtiesContext
-    public void should_not_checkin_books_that_are_checked_out_by_others(){
-        try {
-            Book book = service.getById(1L);
-            service.checkin(book);
-            fail("We should not reach this point.");
-        } catch (Exception e){
-            assertTrue(e instanceof IllegalAccessException);
-        }
+    public void should_not_checkin_books_that_are_checked_out_by_others() throws Exception {
+        Book book = service.getById(1L);
+        service.checkin(book);
     }
 }

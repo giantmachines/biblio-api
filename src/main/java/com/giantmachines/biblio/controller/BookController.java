@@ -25,7 +25,7 @@ public class BookController extends AbstractBaseController {
     private final String path = "books";
     private final BookService service;
     private final ReviewService reviewService;
-    private final AuditorAware<User> auditor;
+    private final AuditorAware<User> auditService;
 
 
     @RequestMapping(method = RequestMethod.GET)
@@ -132,9 +132,9 @@ public class BookController extends AbstractBaseController {
         private Boolean highlight = null;
 
         BookDto(final Book book) {
-            String userName = BookController.this.auditor
+            String userName = BookController.this.auditService
                     .getCurrentAuditor()
-                    .get()
+                    .orElse(new User())
                     .getEmail();
             this.id = book.getId();
             this.title = book.getTitle();
@@ -157,6 +157,7 @@ public class BookController extends AbstractBaseController {
     @Getter
     private class BookDetailsDto extends BookDto{
         private List<Review> reviews;
+
         BookDetailsDto(Book book) {
             super(book);
             this.reviews = book.getReviews();
