@@ -1,8 +1,6 @@
 package com.giantmachines.biblio.security;
 
 import com.giantmachines.biblio.model.User;
-import com.giantmachines.biblio.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
