@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/books")
 public class BookController extends AbstractBaseController {
 
-    private final String path = "books";
+    private static final String path = "books";
     private final BookService service;
     private final ReviewService reviewService;
     private final AuditorAware<User> auditService;

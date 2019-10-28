@@ -22,12 +22,10 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NonNull
     @OneToOne(fetch = FetchType.EAGER)
     private User reviewer;
     @NonNull
     private int value;
-    @NonNull
     private String comments;
     @Column(name = "time_created", nullable = false, updatable = false)
     @CreatedDate

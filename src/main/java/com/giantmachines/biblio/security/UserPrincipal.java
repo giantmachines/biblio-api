@@ -9,7 +9,9 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserPrincipal implements UserDetails {
-    private User user;
+    private transient User user;
+    private static final long serialVersionUID = 4L;
+
     private List<GrantedAuthority> authorities = new ArrayList<>();
     {
         authorities.add((GrantedAuthority) () -> "ROLE_USER");
