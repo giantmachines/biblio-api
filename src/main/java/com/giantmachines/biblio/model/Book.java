@@ -25,6 +25,8 @@ public class Book {
     @OneToOne
     private Author author;
     private String image;    // An image path or URL
+    private String description;
+    private String publisher;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
     @OrderBy("timeCreated desc")
