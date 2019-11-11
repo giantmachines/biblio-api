@@ -4,6 +4,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 **/.DS_Store
+local.env
 
 ### STS ###
 .apt_generated
