@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                     .permitAll()
                     .loginProcessingUrl(LOGIN_PATH)
-                    .usernameParameter("email")
+                    .usernameParameter("username")
                     .passwordParameter("password")
                     .successHandler(successHandler())
                     .failureHandler(failureHandler())
@@ -82,7 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("bcrypt", encoders);
         passwordEncoder.setDefaultPasswordEncoderForMatches(defaultEncoder);
-        return  passwordEncoder;
+        return passwordEncoder;
     }
 
     @Bean
