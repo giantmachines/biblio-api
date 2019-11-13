@@ -3,7 +3,8 @@ insert into author(id, first_name, last_name) values(2, 'Martin', 'Fowler');
 insert into author(id, first_name, last_name) values(3, 'Eric', 'Gamma');
 insert into author(id, first_name, last_name) values(4, 'Harold', 'Camping');
 
-insert into user(id, first_name, last_name, active, online, email, password) values(1, 'Philip', 'Ford', 1, 1, 'paford@gmail.com', '{noop}1234');
+insert into user(id, first_name, last_name, active, online, email, password)
+    values(1, 'Philip', 'Ford', 1, 1, 'paford@gmail.com', '$2a$10$pgKoY2yYsTtT.4ph6xtPxe13Ix1HJxNbGr42P.WrNizS3Oqy7DW4G');
 
 
 insert into book(id, image, title, author_id, status, time_created, last_updated)
