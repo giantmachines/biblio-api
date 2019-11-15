@@ -1,6 +1,10 @@
 package com.giantmachines.biblio.configuration;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.giantmachines.biblio.model.User;
+import com.giantmachines.biblio.security.JwtTokenFilter;
+import com.giantmachines.biblio.security.JwtTokenProvider;
 import com.giantmachines.biblio.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -39,11 +44,13 @@ import java.util.Map;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
+    private JwtTokenProvider jwtTokenProvider;
     private static final String LOGIN_PATH = "/users/login";
 
 
-    public WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+    public WebSecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, JwtTokenProvider tokenProvider) {
         this.userDetailsService = userDetailsService;
+        this.jwtTokenProvider = tokenProvider;
     }
 
 
@@ -72,6 +79,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anonymous();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 
 
@@ -104,9 +113,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException {
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                UserPrincipal user = (UserPrincipal) auth.getPrincipal();
+                User user = ((UserPrincipal) auth.getPrincipal()).getUser();
+                user = user.toBuilder().password(null).build();
+                String token = jwtTokenProvider.createToken(user.getEmail());
+                resp.setHeader("Authorization", "Bearer " + token);
                 resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(user.getUsername());
+                resp.getWriter().write(new ObjectMapper().writeValueAsString(user));
                 resp.getWriter().flush();
             }
         };

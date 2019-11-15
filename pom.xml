@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.giantmachines</groupId>
 	<artifactId>biblio</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>biblio</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -62,6 +62,13 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 			<version>${lombok.version}</version>
+		</dependency>
+
+		<dependency>
+			<!-- JSON Web Token Support -->
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.7.0</version>
 		</dependency>
 
 		<dependency>

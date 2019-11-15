@@ -34,7 +34,7 @@ spec:
         run: biblio-api
     spec:
       containers:
-      - image: pford68/biblio-api:v1.0.0
+      - image: pford68/biblio-api:1.0.0
         imagePullPolicy: "Always"
         name: biblio-api
         ports:
