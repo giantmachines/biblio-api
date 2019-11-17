@@ -130,6 +130,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException e) throws IOException {
                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                resp.setHeader("Authorization", null);
                 resp.getWriter().flush();
             }
         };

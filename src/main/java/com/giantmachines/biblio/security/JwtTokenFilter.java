@@ -30,6 +30,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             //Important: Clearing the context guarantees the user is not authenticated at all.
             SecurityContextHolder.clearContext();
             //httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            httpServletResponse.setHeader("Authorization", null);
             return;
         }
 
