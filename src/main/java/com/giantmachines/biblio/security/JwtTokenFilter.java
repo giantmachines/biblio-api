@@ -25,6 +25,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+                if (httpServletRequest.getRequestURI().contains("/session/ping")) {
+                    httpServletResponse.getWriter().write("pong");
+                    httpServletResponse.getWriter().flush();
+                    return;
+                }
+            } else if (httpServletRequest.getRequestURI().contains("/session/ping")) {
+                httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         } catch (Exception e) {
             //Important: Clearing the context guarantees the user is not authenticated at all.
