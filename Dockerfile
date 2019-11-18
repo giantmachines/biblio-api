@@ -13,6 +13,7 @@ ENV DB_PWD $DB_PWD
 ENV DB_DBNAME $DB_DBNAME
 ENV DB_HOST $DB_HOST
 ENV DB_URL jdbc:mysql://${DB_HOST}/${DB_NAME}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+ENV APP_VERSION $APP_VERSION
 
 COPY target/biblio-${APP_VERSION}.jar .
 
