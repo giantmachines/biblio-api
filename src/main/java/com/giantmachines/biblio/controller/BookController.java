@@ -130,6 +130,8 @@ public class BookController extends AbstractBaseController {
         private String status;
         @JsonInclude(JsonInclude.Include.NON_NULL)
         private Boolean highlight = null;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        private String description;
 
         BookDto(final Book book) {
             String userName = BookController.this.auditService
@@ -140,6 +142,7 @@ public class BookController extends AbstractBaseController {
             this.title = book.getTitle();
             this.author = book.getAuthor();
             this.image = book.getImage();
+            this.description = book.getDescription();
             if (userName != null){
                 this.highlight = false;
                 this.status = book.getStatus().toString();

@@ -22,6 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userService.getByUserName(s);
 
         if (user == null){
+            log.info(String.format("Authentication attempt failed:  %s", s));
             throw new UsernameNotFoundException(s);
         }
 

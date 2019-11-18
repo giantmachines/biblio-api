@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: biblio-svc
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+    name: http
+  selector:
+    run: biblio-api
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: biblio-api
+  name: biblio-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: biblio-api
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: biblio-api
+    spec:
+      containers:
+      - image: pford68/biblio-api:1.0.0
+        imagePullPolicy: "Always"
+        name: biblio-api
+        ports:
+        - containerPort: 8080
+        resources: {}
+status: {}
