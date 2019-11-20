@@ -27,8 +27,7 @@ public class Book {
     private String image;    // An image path or URL
     private String description;
     private String publisher;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "book")
     @OrderBy("timeCreated desc")
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.giantmachines.biblio.services;
 
 import com.giantmachines.biblio.dao.BookRepository;
+import com.giantmachines.biblio.dao.ReviewRepository;
 import com.giantmachines.biblio.exceptions.BookUnavailableException;
 import com.giantmachines.biblio.model.*;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class BookService {
     private final BookRepository repository;
     private final AuthorService authorService;
     private final AuditorAware<User> auditService;
+    private final ReviewRepository reviewRepository;
 
 
     public List<Book> getAll(){
@@ -59,6 +61,8 @@ public class BookService {
     public Book addReview(Book book, Review review){
         book = this.getById(book.getId());
         List<Review> reviews = book.getReviews();
+        review = review.toBuilder().book(book).build();
+        review = this.reviewRepository.save(review);
         reviews.add(review);
         Book result = book.toBuilder()
                 .reviews(reviews)
