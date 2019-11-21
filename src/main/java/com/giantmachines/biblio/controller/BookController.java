@@ -3,7 +3,6 @@ package com.giantmachines.biblio.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.giantmachines.biblio.model.*;
 import com.giantmachines.biblio.services.BookService;
-import com.giantmachines.biblio.services.ReviewService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
