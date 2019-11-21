@@ -120,7 +120,6 @@ public class BookControllerIT extends AbstractBaseIT {
     @Test
     public void should_save_a_new_review() throws Exception{
         Map<String, Object> values = new HashMap<>();
-        values.put("reviewer", User.builder().id(1L).build());
         values.put("comments", "Booooring.");
         values.put("value", "1");
         String json = new ObjectMapper().writeValueAsString(values);

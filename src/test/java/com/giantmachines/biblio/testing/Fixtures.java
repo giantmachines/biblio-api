@@ -54,7 +54,7 @@ public class Fixtures {
                 .author(authors.get(0))
                 .image("http://localhost/biblio/books/images/1")
                 .status(Status.UNAVAILABLE)
-                .reviews(Collections.singletonList(reviews.get(0)))
+                //.reviews(Collections.singletonList(reviews.get(0)))
                 .build());
         books.add(Book.builder()
                 .title("Patterns of Enterprise Software")

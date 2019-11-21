@@ -33,4 +33,7 @@ public class Review {
     @Column(name = "last_updated", nullable = false)
     @LastModifiedDate
     private long timeUpdated;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name="book_id")
+    private Book book;
 }

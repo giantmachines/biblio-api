@@ -11,8 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -27,11 +26,6 @@ public class Book {
     private String image;    // An image path or URL
     private String description;
     private String publisher;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id")
-    @OrderBy("timeCreated desc")
-    @Builder.Default
-    private List<Review> reviews = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     @NotNull
     @Column(columnDefinition = "varchar(12) default 'AVAILABLE'")
