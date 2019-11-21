@@ -6,6 +6,9 @@ import com.giantmachines.biblio.services.BookService;
 import com.giantmachines.biblio.services.ReviewService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +23,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/books")
+@Slf4j
 public class BookController extends AbstractBaseController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
     private static final String path = "books";
     private final BookService service;
-    private final ReviewService reviewService;
     private final AuditorAware<User> auditService;
 
 
@@ -44,7 +48,7 @@ public class BookController extends AbstractBaseController {
     @RequestMapping(value = "/{bookId}/reviews", method = RequestMethod.GET)
     public ResponseEntity getReviewsByBookId(@PathVariable("bookId") long id){
         Book book = this.service.getById(id);
-        return this.buildOkResponse(book.getReviews());
+        return this.buildOkResponse(this.service.getReviews(book));
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -71,18 +75,18 @@ public class BookController extends AbstractBaseController {
     @RequestMapping(value = "{bookId}/review", method = RequestMethod.POST)
     public ResponseEntity saveReview(@PathVariable("bookId") long bookId, @RequestBody Review review){
         Book book = this.service.getById(bookId);
-        book = this.service.addReview(book, review);
+        review = review.toBuilder()
+                .book(book)
+                .reviewer(this.auditService.getCurrentAuditor().orElseThrow())
+                .build();
+        this.service.saveReview(review);
         return this.buildOkResponse(new BookDetailsDto(book));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "{bookId}/review", method = RequestMethod.PUT)
     public ResponseEntity updateReview(@PathVariable("bookId") long bookId, @RequestBody Review review) throws Exception{
-        Review current = this.reviewService.getById(review.getId());
-        if (current == null){
-            throw new Exception("The resource was not found.");
-        }
-        this.reviewService.update(review);
+        this.service.updateReview(review);
         Book book = this.service.getById(bookId);
         return this.buildOkResponse(new BookDetailsDto(book));
     }
@@ -90,9 +94,9 @@ public class BookController extends AbstractBaseController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "{bookId}/review/{reviewId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteReview(@PathVariable("bookId") long bookId,
-                                       @PathVariable("reviewId") long reviewId){
-        Book book = this.service.deleteReview(bookId, reviewId);
-        return this.buildOkResponse(new BookDetailsDto(book));
+                                       @PathVariable("reviewId") long reviewId) {
+        this.service.deleteReview(reviewId);
+        return this.buildOkResponse(new BookDetailsDto(service.getById(bookId)));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -143,17 +147,11 @@ public class BookController extends AbstractBaseController {
             this.author = book.getAuthor();
             this.image = book.getImage();
             this.description = book.getDescription();
-            if (userName != null){
-                this.highlight = false;
+            if (userName != null) {
                 this.status = book.getStatus().toString();
-                if (book.getStatus().equals(Status.UNAVAILABLE)
-                        && book.getLastModifiedBy() != null
-                        && userName.equals(book.getLastModifiedBy().getEmail())) {
-                    this.highlight = true;
-                }
+                this.highlight = BookController.this.service.highlight(book);
             }
-            double rating = book.getReviews().stream().mapToDouble(Review::getValue).average().orElse(-1.0);
-            this.averageRating = rating > 0 ? rating : null;
+            this.averageRating = BookController.this.service.getAverageRating(book);
         }
     }
 
@@ -163,7 +161,7 @@ public class BookController extends AbstractBaseController {
 
         BookDetailsDto(Book book) {
             super(book);
-            this.reviews = book.getReviews();
+            this.reviews = BookController.this.service.getReviews(book);
         }
     }
 }

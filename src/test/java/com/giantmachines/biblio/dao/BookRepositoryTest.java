@@ -5,6 +5,7 @@ import com.giantmachines.biblio.model.Book;
 import com.giantmachines.biblio.model.Status;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.Assert.*;
 
@@ -12,6 +13,7 @@ import static org.junit.Assert.*;
  * Uses an in-memory database and tests the interaction with the
  * Book model as well.
  */
+@Sql({"classpath:data.sql"})
 public class BookRepositoryTest extends AbstractBaseJpaTest{
 
     @Autowired

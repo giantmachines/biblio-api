@@ -134,14 +134,14 @@ public class BookServiceTest extends AbstractBaseServiceTest{
     public void should_save_a_new_review(){
         String comment = "A hated it.";
         User user = this.userRepository.findById(1L).get();
+        Book book = service.getById(3L);
         Review review = Review.builder()
                 .reviewer(user)
                 .value(2)
+                .book(book)
                 .comments(comment)
                 .build();
-        Book book = service.getById(3L);
-        book = service.addReview(book, review);
-        review = book.getReviews().get(0);
+        review = service.saveReview(review);
         assertNotNull(review.getReviewer());
         assertNotEquals(0, review.getTimeCreated());
         assertNotEquals(0, review.getTimeUpdated());
@@ -153,10 +153,11 @@ public class BookServiceTest extends AbstractBaseServiceTest{
     @Sql({"classpath:tests.sql"})
     @DirtiesContext
     public void should_delete_an_existing_review(){
-        assertTrue(service.hasReviews(3L));  // A control
+        Book book = service.getById(3L);
+        assertFalse(service.getReviews(book).isEmpty());  // A control
         Review review = reviewRepository.findById(2L).get();
-        service.deleteReview(3L, review.getId());
-        assertFalse(service.hasReviews(3L));
+        service.deleteReview(review.getId());
+        assertTrue(service.getReviews(book).isEmpty());
     }
 
 

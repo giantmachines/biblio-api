@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Provides services for retrieving and updating books
@@ -40,7 +39,7 @@ public class BookService {
 
 
     public Book getById(long id){
-        return this.repository.findById(id).get();
+        return this.repository.findById(id).orElseThrow();
     }
 
 
@@ -57,17 +56,50 @@ public class BookService {
     }
 
 
+    public boolean highlight(Book book){
+        String userName = this.auditService
+                .getCurrentAuditor()
+                .orElse(new User())
+                .getEmail();
+        boolean highlight = false;
+        if (userName != null){
+            if (book.getStatus().equals(Status.UNAVAILABLE)
+                    && book.getLastModifiedBy() != null
+                    && userName.equals(book.getLastModifiedBy().getEmail())) {
+                highlight = true;
+            }
+        }
+        return highlight;
+    }
+
+
+    public Double getAverageRating(Book book){
+        double rating = this.getReviews(book)
+                .stream()
+                .mapToDouble(Review::getValue).average().orElse(-1.0);
+        return rating > 0 ? rating : null;
+    }
+
+
+    public List<Review> getReviews(Book book){
+        return this.reviewRepository.getByBook(book);
+    }
+
+
     @Transactional
-    public Book addReview(Book book, Review review){
-        book = this.getById(book.getId());
-        List<Review> reviews = book.getReviews();
-        review = review.toBuilder().book(book).build();
-        review = this.reviewRepository.save(review);
-        reviews.add(review);
-        Book result = book.toBuilder()
-                .reviews(reviews)
+    public Review saveReview(Review review){
+        return this.reviewRepository.save(review);
+    }
+
+
+    @Transactional
+    public Review updateReview(Review review) {
+        Review current = this.reviewRepository.findById(review.getId()).orElseThrow();
+        Review result = current.toBuilder()
+                .value(review.getValue())
+                .comments(review.getComments())
                 .build();
-        return this.repository.save(result);
+        return this.reviewRepository.save(result);
     }
 
 
@@ -80,15 +112,9 @@ public class BookService {
     }
 
     @Transactional
-    public Book deleteReview(long bookId, long id){
-        Book book = this.getById(bookId);
-        List<Review> reviews = book
-                .getReviews()
-                .stream()
-                .filter(review -> review.getId() != id)
-                .collect(Collectors.toList());
-        Book result = book.toBuilder().reviews(reviews).build();
-        return this.repository.save(result);
+    public void deleteReview(long reviewId) {
+        Review review = this.reviewRepository.findById(reviewId).orElse(null);
+        this.reviewRepository.delete(review);
     }
 
     @Transactional
@@ -119,10 +145,5 @@ public class BookService {
                 .status(Status.AVAILABLE)
                 .build();
         return this.save(result);
-    }
-
-
-    public boolean hasReviews(long id){
-        return this.getById(id).getReviews().size() > 0;
     }
 }
