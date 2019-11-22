@@ -17,7 +17,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("secure")
+@ActiveProfiles({"secure", "dev"})
 @WithUserDetails(value="paford@gmail.com", userDetailsServiceBeanName="userDetailsServiceImpl")
 abstract public class AbstractBaseIT {
 
