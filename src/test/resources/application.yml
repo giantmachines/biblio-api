@@ -1,0 +1,15 @@
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:h2:mem:biblio_test
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+    initializationMode: always
+  jpa:
+    databasePlatform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddlAuto: create-drop
+    showSql: true
+
+

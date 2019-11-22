@@ -1,0 +1,46 @@
+spring:
+  profiles: dev
+logging:
+  level:
+    com.giantmachines: DEBUG
+
+---
+spring:
+  profiles: secure
+  datasource:
+    url: jdbc:mysql://localhost/biblio_dev?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: macedon
+    driverClassName: com.mysql.jdbc.Driver
+    initializationMode: never
+  jpa:
+    databasePlatform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddlAuto: none
+    showSql: true
+server:
+   servlet:
+      contextPath: /api/v1
+security:
+  jwt:
+    token:
+      expireLength: 60000
+
+---
+spring:
+  profiles: production
+  # Hibernate
+  jpa:
+    hibernate:
+      ddlAuto: none
+  datasource:
+    url: jdbc:mysql://localhost/biblio_prod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+  #database-platform: org.hibernate.dialect.PostgreSQL82Dialect
+logging:
+  level:
+    com.giantmachines: INFO
+# Endpoints
+management:
+  endpoints:
+    shutdown:
+      enabled: false
